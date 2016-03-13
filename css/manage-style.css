@@ -1,0 +1,47 @@
+div#logo,div#ftp_section
+{
+	position: relative;
+	margin-left: 580px;
+	margin-top: 60px;
+}
+
+div#ftp_section
+{
+	position: relative;
+	width: 320px;
+	border: solid 1px;
+	margin-top: 20px;
+	margin-left: 500px;
+}
+div#ftp_section input
+{
+	width:280px;
+	height: 30px;
+	margin-left: 20px;
+}
+
+p.hintOk, p.hintError
+{
+	text-align: center;
+}
+
+p.hintError
+{
+	color: red;
+}
+
+input.submit_buttonOk,input.submit_buttonError
+{
+	font-size: 110%;
+	padding-top: 10px;
+	padding-bottom: 25px;
+}
+input.submit_buttonOk
+{
+	background-color: #009DD9;
+}
+
+input.submit_buttonError
+{
+	background-color: #EEE;
+}
