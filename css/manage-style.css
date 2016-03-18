@@ -1,3 +1,10 @@
+body
+{
+	background-image: url("../images/background.jpg");
+	background-size: cover;
+}
+
+
 div#logo,div#ftp_section
 {
 	position: relative;
@@ -10,6 +17,7 @@ div#ftp_section
 	position: relative;
 	width: 320px;
 	border: solid 1px;
+	border-color: #206FA1;
 	margin-top: 20px;
 	margin-left: 500px;
 }
@@ -23,6 +31,11 @@ div#ftp_section input
 p.hintOk, p.hintError
 {
 	text-align: center;
+}
+
+p.hintOk
+{
+	color: blue;
 }
 
 p.hintError

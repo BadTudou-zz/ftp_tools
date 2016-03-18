@@ -2,8 +2,15 @@ $(document).ready(function()
 {
 	$("input").focus(function(event) 
 	{
-		$("#hintText").text("登陆FTP服务器");
+		$("#hintText").text("登陆FTP服务器").addClass('hintOk');
+		$("#hintText").removeClass('hintError');
 	});
+
+	//读取Cookie的值
+	$('#ftp_host').val($.cookie('ftp_cookie[0]'));
+	$('#ftp_port').val($.cookie('ftp_cookie[1]'));
+	$('#ftp_user').val($.cookie('ftp_cookie[2]'));
+	$('#ftp_pwd').val($.cookie('ftp_cookie[3]'));
 
 	//检测所有输入项是否有值
 	$("input").hover(function(event) 
@@ -32,7 +39,7 @@ $(document).ready(function()
 	//提交表单，异步处理
 	$("#submit_button").click(function(event) 
 	{
-		console.log("提交表单");
+		$("#hintText").text("正在登陆FPT服务器......");
 		$.ajax(
 		{
 			url: 'web_manage.php',
@@ -40,28 +47,18 @@ $(document).ready(function()
 			dataType: 'JSON',
 			data:$('#ftp_info').serialize(),
 		})
-		.done(function(data) 
+		.done(function(json)
 		{
-			/*if (json.state == 0)
+			if (json.state == 0)
 			{
-				console.log('此处跳转到目标网页');
+				$("#hintText").text("登陆成功");
+				location.href = json.msg;
 			}
 			else
 			{
 				$("#hintText").text(json.msg).addClass('hintError');
-			}*/
-			console.log("ok");
-			//console.log(data.msg);
+			}
 		})
-		.fail(function() 
-		{
-			console.log("connect error");
-		})
-		.always(function() 
-		{
-			console.log("complete");
-		});
-
-		//return false;
+		return false;
 	});
 });
