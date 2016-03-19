@@ -1,60 +1,52 @@
-body
+#header
 {
-	background-image: url("../images/background.jpg");
-	background-size: cover;
-}
-
-
-div#logo,div#ftp_section
-{
-	position: relative;
-	margin-left: 580px;
-	margin-top: 60px;
-}
-
-div#ftp_section
-{
-	position: relative;
-	width: 320px;
+	width: 100%;
+	height: 50px;
 	border: solid 1px;
-	border-color: #206FA1;
-	margin-top: 20px;
-	margin-left: 500px;
+	border-color: #000;
 }
-div#ftp_section input
+
+#header_userinfo
 {
-	width:280px;
-	height: 30px;
+	position: relative;
+	margin-left: 1000px;
+	height: 50px;
+	border:solid 1px;
+}
+
+#folder
+{
+	position: relative;
+	margin-top: 10px;
+	width: 100%;
+	height: 100%;
+}
+
+
+#folderTree, #folderList
+{
+	height: 550px;
+}
+#folderTree
+{
+	position: relative;
+	width: 30%;
 	margin-left: 20px;
+	float: left;
+	border: solid 1px;
 }
 
-p.hintOk, p.hintError
+#folderList
 {
-	text-align: center;
+	float: left;
+	width: 65%;
+	margin-left: 20px;
+	border: solid 1px;
+	border-color: #1FF;
 }
 
-p.hintOk
+#folderList_header
 {
-	color: blue;
-}
-
-p.hintError
-{
-	color: red;
-}
-
-input.submit_buttonOk,input.submit_buttonError
-{
-	font-size: 110%;
-	padding-top: 10px;
-	padding-bottom: 25px;
-}
-input.submit_buttonOk
-{
-	background-color: #009DD9;
-}
-
-input.submit_buttonError
-{
-	background-color: #EEE;
+	height: 40px;
+	border:solid 1px;
 }

@@ -24,15 +24,18 @@
 
 		public function __destruct()
 		{
+			
 			if ($this->getLoginState())
 			{
 				ftp_close($this->m_resource);
 			}
+
+			//echo json_encode('dfsdfdfsdsdf');
 		}
 
 		public function connect()
 		{
-			$this->m_resource = @ftp_connect($this->m_host, $this->m_port, 5);
+			$this->m_resource = @ftp_connect($this->m_host, $this->m_port);
 			if ($this->m_resource)
 			{
 				$this->m_ConnectState = true;
@@ -69,6 +72,16 @@
 		public function getLoginState()
 		{
 			return $this->m_LoginState;
+		}
+
+		public  function getPWD()
+		{
+			return ftp_pwd($this->m_resource);
+		}
+
+		public function getUser()
+		{
+			return $this->m_user;
 		}
 
 	}
