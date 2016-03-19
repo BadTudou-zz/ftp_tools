@@ -5,12 +5,17 @@
 	 * @param  [array] $aAnswer [状态码与状态消息]
 	 * @return [null]
 	 */
-	function sendAnswer($aAnswer)
+	require_once('FTP.php');
+	use badtudou\FTP as FTP;
+	
+	function sendAnswer(int $state, $msg)
 	{
-		echo json_encode($aAnswer);
+		$aLoginResult['state'] = $state;
+		$aLoginResult['msg'] = $msg;
+		echo json_encode($aLoginResult);
 	}
 
-	//define('DEBUG', true);
+	define('DEBUG', true);
 	if (!defined('DEBUG'))
 	{
 		error_reporting(0);
@@ -25,8 +30,36 @@
 	$ftp_user = $_POST['ftp_user'];
 	$ftp_pwd  = $_POST['ftp_pwd'];
 	
+	$ftp_info = new FTP($ftp_host, $ftp_port, $ftp_user, $ftp_pwd);
+	$ftp_info->connect();
+	if ($ftp_info->getConnectState())
+	{
+		$ftp_info->login();
+		if ($ftp_info->getLoginState())
+		{
+			$ftp_info->close();
+			sendAnswer(0 , 'filemanage.php');
 
-	try
+			//创建会话
+			session_start();
+			$_SESSION['ftp_login'] = true;
+
+			//FTP信息写入cookie
+			setcookie('ftp_cookie[0]', $ftp_host);
+			setcookie('ftp_cookie[1]', $ftp_port);
+			setcookie('ftp_cookie[2]', $ftp_user);
+			setcookie('ftp_cookie[3]', $ftp_pwd);
+		}
+		else
+		{
+			sendAnswer(2 , 'FTP用户名或密码错误');
+		}
+	}
+	else
+	{
+		sendAnswer(1 , '无法连接FTP服务器');
+	}
+	/*try
 	{
 		$conn = @ftp_connect($ftp_host, $ftp_port, 300);
 		if ($conn == FALSE)
@@ -62,7 +95,7 @@
  				{
     				echo "ftp://{$ftp_host}{$directory_root}/{$value}<br/>";
  				}
- 				*/
+ 				
 			}
 			else
 			{
@@ -80,6 +113,6 @@
 	{
 		throw new Exception();
 		exit();
-	}
+	}*/
 
 ?>

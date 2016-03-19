@@ -7,45 +7,69 @@
 		protected $m_user;
 		protected $m_pwd;
 		protected $m_resource;
+		protected $m_connect;
 		protected $m_root;
 		protected $m_ConnectState;
+		protected $m_LoginState;
 
 		public function __construct($host, int $port, $user, $pwd)
 		{
-			$m_host = $host;
-			$m_port = $port;
-			$m_user = $user;
-			$m_pwd  = $pwd;
-			$m_ConnectState = false;
-			$m_LoginState = false;
+			$this->m_host = $host;
+			$this->m_port = $port;
+			$this->m_user = $user;
+			$this->m_pwd  = $pwd;
+			$this->m_ConnectState = false;
+			$this->m_LoginState = false;
 		}
 
 		public function __destruct()
 		{
-			if (m_ConnectState == true)
+			if ($this->getLoginState())
 			{
-				ftp_close($m_resource);
+				ftp_close($this->m_resource);
 			}
 		}
 
-		protected function login()
+		public function connect()
 		{
-			$m_resource = ftp_connect($m_host, $m_port);
-			if ($m_resource)
+			$this->m_resource = @ftp_connect($this->m_host, $this->m_port, 5);
+			if ($this->m_resource)
 			{
-				$m_ConnectState = true;
-
-				try
-				{
-					@ftp_login($m_resource, $m_user, $m_pwd);
-					$m_LoginState = true;
-				}
-				catch(Exception $e)
-				{
-					throw new Exception("Error Processing Request", 1);
-					exit();
-				}
+				$this->m_ConnectState = true;
 			}
 		}
+
+		public function login()
+		{
+			try
+			{
+				if ( @ftp_login($this->m_resource, $this->m_user, $this->m_pwd) )
+				{
+					$this->m_LoginState = true;
+				}
+			}
+			catch(Exception $e)
+			{
+				throw new Exception("Error Processing Request", 1);
+				exit();
+			}
+		}
+
+		public function close()
+		{
+			ftp_close($this->m_resource);
+			$this->m_LoginState = false;
+		}
+
+		public function getConnectState()
+		{
+			return $this->m_ConnectState;
+		}
+
+		public function getLoginState()
+		{
+			return $this->m_LoginState;
+		}
+
 	}
 ?>

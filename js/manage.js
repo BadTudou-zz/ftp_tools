@@ -57,6 +57,7 @@ $(document).ready(function()
 			else
 			{
 				$("#hintText").text(json.msg).addClass('hintError');
+				console.log(json.msg);
 			}
 		})
 		return false;
