@@ -15,6 +15,15 @@
 	<title>管理</title>
 </head>
 <body>
+	<div id="header">
+		
+	</div>
+
+	<div id="folder">
+		<div id="folderTree"></div>
+		<div id="folderList"></div>
+	</div>
+
 	<?php  
 		require_once('FTP.php');
 		use badtudou\FTP as FTP;
