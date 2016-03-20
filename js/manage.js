@@ -51,7 +51,7 @@ function GetFileList(object, file, state, node)
 	})
 	.done(function(json) 
 	{
-		console.log(json);
+		console.log(file+json);
 		if (object == '#folderTree')
 		{
 			if (file == '/')
@@ -66,6 +66,10 @@ function GetFileList(object, file, state, node)
 			{
 				$.each(json, function(idx, obj) 
 				{
+					if (obj == file)
+					{
+						return ;
+					}
 					if (obj != '.' && obj != '..')
 					{
 						$('#folderTree').tree(
@@ -115,7 +119,16 @@ $(document).ready(function()
     	function(event) 
     	{
         	var node = event.node;
-        	var data = GetFileList('#folderTree','/'+node.name, 0, node);}
+        	var path = new Array();
+        	var tmp = node.parent;
+        	while ( (tmp.name != '') && (tmp.name != node.name) )
+        	{
+        		path.push(tmp.name);
+        		tmp = tmp.parent;
+        	}
+        	path.push(node.name);
+        	console.log('click'+path.join('/'));
+        	var data = GetFileList('#folderTree','/'+path.join('/'), 0, node);}
 	);
 	GetFileList('#folderTree','/',0, 0);
 	//GetFileList('#folderList','/ftp',1);

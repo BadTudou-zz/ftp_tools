@@ -74,7 +74,7 @@
 
 		function GetFileList(&$ftpManage, $file, $state)
 		{
-			if ($file == '/')
+			if ($file === '/')
 			{
 				return file_get_contents(session_id().'.json');
 			}
