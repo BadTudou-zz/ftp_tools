@@ -1,4 +1,4 @@
-function login()
+function Login()
 {
 	$.ajax({
 		url: 'web_manage.php',
@@ -8,7 +8,6 @@ function login()
 	})
 	.done(function(json) 
 	{
-		console.log(json);
 		if (json.state == 0)
 		{
 			$("#header_userinfo_head").show();
@@ -25,7 +24,7 @@ function login()
 	});
 }
 
-function get_pwd()
+function GetPwd()
 {
 	$.ajax({
 		url: 'web_manage.php',
@@ -37,11 +36,89 @@ function get_pwd()
 	{
 		$("#folderTree").html(json.msg);
 		console.log(json);
+
+		return json.msg;
 	})
+}
+
+function GetFileList(object, file, state, node)
+{
+	$.ajax({
+		url: 'web_manage.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {'action':'GetFileList','file':file, 'state':state}
+	})
+	.done(function(json) 
+	{
+		console.log(json);
+		if (object == '#folderTree')
+		{
+			if (file == '/')
+			{
+				$('#folderTree').tree({
+    				data: json,
+    				autoOpen: false,
+    				dragAndDrop: true
+				});
+			}
+			else
+			{
+				$.each(json, function(idx, obj) 
+				{
+					if (obj != '.' && obj != '..')
+					{
+						$('#folderTree').tree(
+    					'appendNode',
+    					obj,
+    					node);	
+					}
+
+				});
+			}
+		}
+		if (state == 1)
+		{
+			$(object).html(json);
+		}
+		return json;
+		
+	})
+	.fail(function(json) {
+		console.log("get file list error"+json);
+	})
+}
+
+function ChangeDir(path)
+{
+	$.ajax({
+		url: 'web_manage.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {'action':'ChangeDir','path':path}
+	})
+	.done(function() {
+		console.log("success");
+	})
+	.fail(function() {
+		console.log("change dir error");
+	})
+	
 }
 
 $(document).ready(function()
 {
-	login();
-	get_pwd();
+
+	$('#folderTree').bind
+	(
+    	'tree.click',
+    	function(event) 
+    	{
+        	var node = event.node;
+        	var data = GetFileList('#folderTree','/'+node.name, 0, node);}
+	);
+	GetFileList('#folderTree','/',0, 0);
+	//GetFileList('#folderList','/ftp',1);
+	Login();
 });
+

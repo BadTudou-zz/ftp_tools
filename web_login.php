@@ -32,7 +32,7 @@
 
 	if (!isset($_POST['ftp_host']))
 	{
-		echo 'ddd';
+		header("Location: http:index.php"); 
 		exit();
 	}
 	
@@ -58,13 +58,19 @@
 			$_SESSION['ftp_port'] = $ftp_port;
 			$_SESSION['ftp_user'] = $ftp_user;
 			$_SESSION['ftp_pwd'] = $ftp_pwd;
+			
 			//FTP信息写入cookie
 			setcookie('ftp_cookie[0]', $ftp_host,  time()+3600*24);
 			setcookie('ftp_cookie[1]', $ftp_port,  time()+3600*24);
 			setcookie('ftp_cookie[2]', $ftp_user,  time()+3600*24);
 			setcookie('ftp_cookie[3]', $ftp_pwd,  time()+3600*24);
 
-			//$ftp_info->close();
+			//读取FTP文件列表，并写入SESSION
+			//$sessionID = session_id();
+			fopen(session_id().".json",'w+');
+			file_put_contents(session_id().".json", json_encode($ftp_info->getFileList('/')));
+			//fwrite($fJson, json_encode($ftp_info->getFileList('/')));
+			$ftp_info->close();
 		}
 		else
 		{

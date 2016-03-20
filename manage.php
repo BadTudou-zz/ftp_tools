@@ -11,8 +11,10 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/jqtree/jqtree.css">
 	<link rel="stylesheet" type="text/css" href="css/manage-style.css">
 	<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	<script type="text/javascript" src="js/tree.jquery.js"></script>
 	<script type="text/javascript" src="js/manage.js"></script>
 	<title>管理</title>
 </head>
@@ -31,7 +33,7 @@
 
 	<div id="folder">
 		<div id="folderTree"></div>
-		<div id="folderList">
+		<div id="folderList">得到
 			<div id="folderList_header"></div>
 		</div>
 	</div>

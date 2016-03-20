@@ -36,19 +36,21 @@
 			switch ($action)
 			{
 				case 'Login':
-					if ($ftpManage->getLoginState())
-					{
-						sendAnswer(0, $ftpManage->getUser());
-					}
-					else
-					{
-						sendAnswer(1, '离线');
-					}
+					sendAnswer(0, $_SESSION['ftp_user']);
 					break;
 				
 				case 'GetPWD':
 					GetPWD($ftpManage);
 					break;
+
+				case 'GetFileList':
+					echo GetFileList($ftpManage, $_POST['file'], $_POST['state']);
+					break;
+
+				case 'ChangeDir':
+					ChangeDir($ftpManage, $_POST['path']);
+					break;
+
 				default:
 					# code...
 					break;
@@ -61,26 +63,46 @@
 			$ftpManage->connect();
 			$ftpManage->login();
 
+			//读取文件，并将其写入json中
+
 		}
 
 		function GetPWD(&$ftpManage)
 		{
-			//sendAnswer(0,$ftpManage->m_resource);
 			sendAnswer(0, $ftpManage->getPWD());
+		}
+
+		function GetFileList(&$ftpManage, $file, $state)
+		{
+			if ($file == '/')
+			{
+				return file_get_contents(session_id().'.json');
+			}
+			else
+			{
+				Login($ftpManage);
+				return json_encode($ftpManage->getFileList($file));
+			}
+		}
+
+		function ChangeDir(&$ftpManage, $path)
+		{
+			return ($ftpManage->changeDir($path));
 		}
 
 		session_start();
 		//登录状态检查
 		if ( !(isset($_SESSION['ftp_login']) && $_SESSION['ftp_login'] === true) )
 		{
-			sendAnswer(1, '123123index.php');
+			sendAnswer(1, 'index.php');
 			exit();
 		}
 		$ftpManage = new FTP($_SESSION['ftp_host'], $_SESSION['ftp_port'], $_SESSION['ftp_user'], $_SESSION['ftp_pwd']);
 
+		//
 		if (isset($_POST['action']))
 		{
-			Login($ftpManage);
+			//Login($ftpManage);
 			DisposeAction($_POST['action'], $ftpManage);
 		}
 	?>

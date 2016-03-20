@@ -60,6 +60,7 @@
 
 #folderTree, #folderList
 {
+	overflow:auto;
 	height: 550px;
 }
 #folderTree

@@ -1,5 +1,6 @@
 <?php
 	namespace badtudou;
+
 	class FTP
 	{
 		protected $m_host;
@@ -30,7 +31,6 @@
 				ftp_close($this->m_resource);
 			}
 
-			//echo json_encode('dfsdfdfsdsdf');
 		}
 
 		public function connect()
@@ -84,5 +84,22 @@
 			return $this->m_user;
 		}
 
+		public function getFileList($path)
+		{
+			return ftp_nlist($this->m_resource, $path);
+		}
+
+		public function changeDir($path)
+		{
+			return @ftp_chdir($this->m_resource, $path);
+		}
+
+		public function getFileSize($file)
+		{
+			return  ftp_size($this->m_resource, $file);
+		}
+
 	}
+
+
 ?>
