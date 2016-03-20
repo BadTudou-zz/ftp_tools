@@ -13,7 +13,7 @@ function login()
 		{
 			$("#header_userinfo_head").show();
 			$("#header_userinfo_name").html(json.msg);
-			$("#header_userinfo_state").text('在线').css({color:"blue"});
+			$("#header_userinfo_state").text('在线').css({color:"#13E03C"});
 		}
 		else
 		{

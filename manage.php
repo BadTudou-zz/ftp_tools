@@ -19,9 +19,13 @@
 <body>
 	<div id="header">
 		<div id="header_userinfo">
-			<img id="header_userinfo_head" src="images/user.png">
-			<span id="header_userinfo_name"></span>
-			<span id="header_userinfo_state"></span>
+			<div id="header_userinfo_head"> <img  src="images/user.png"> </div>
+			<div id="header_userinfo_loginstate">
+				<div id="header_userinfo_name"></div>
+				<div id="header_userinfo_state"></div>
+			</div>
+			
+			<!---->
 		</div>
 	</div>
 

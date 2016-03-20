@@ -4,6 +4,7 @@
 	height: 50px;
 	border: solid 1px;
 	border-color: #000;
+	background-color: #151412;
 }
 
 #header_userinfo
@@ -11,6 +12,40 @@
 	position: relative;
 	margin-left: 1000px;
 	height: 50px;
+	border:solid 1px;
+}
+
+#header_userinfo_head
+{
+	float: left;
+	height: 45px;
+	width: 45px;
+	border:solid 1px;
+}
+
+#header_userinfo_loginstate
+{
+	position: relative;
+	margin-left: 50px;
+	margin-top: 5px;
+	text-align: center;
+	height: 40px;
+	width: 100px;
+	border:solid 1px;
+}
+
+#header_userinfo_name
+{
+	height: 50%;
+	border:solid 1px;
+	color: white;
+}
+
+#header_userinfo_state
+{
+	margin-left: 0px;
+	top: 25px;
+	left: 12px;
 	border:solid 1px;
 }
 
