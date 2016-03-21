@@ -1,7 +1,7 @@
 #header
 {
 	width: 100%;
-	height: 50px;
+	height: 55px;
 	border: solid 1px;
 	border-color: #000;
 	background-color: #151412;
@@ -20,7 +20,6 @@
 	float: left;
 	height: 45px;
 	width: 45px;
-	border:solid 1px;
 }
 
 #header_userinfo_loginstate
@@ -31,13 +30,11 @@
 	text-align: center;
 	height: 40px;
 	width: 100px;
-	border:solid 1px;
 }
 
 #header_userinfo_name
 {
 	height: 50%;
-	border:solid 1px;
 	color: white;
 }
 
@@ -46,7 +43,6 @@
 	margin-left: 0px;
 	top: 25px;
 	left: 12px;
-	border:solid 1px;
 }
 
 #folder
@@ -81,6 +77,28 @@
 	border-color: #1FF;
 }
 
+#folderList ul
+{
+	border-color: red;
+	border: solid 1px;
+	list-style: none;
+}
+
+#folderList ul li
+{
+	margin: 5px 5px 5px 5px;
+	float: left;
+	width: 130px;
+	height: 130px;
+	background-image: url(../images/folder128.png);
+}
+
+#folderList ul li span
+{
+	display: block;
+	padding-top: 110px;
+	text-align: center;
+}
 #folderList_header
 {
 	height: 40px;

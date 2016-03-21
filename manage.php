@@ -33,8 +33,13 @@
 
 	<div id="folder">
 		<div id="folderTree"></div>
-		<div id="folderList">得到
+		<div id="folderList">
 			<div id="folderList_header"></div>
+			<ul>
+				<li><span>1</span></li>
+				<li><span>2</span></li>
+				<li><span>3</span></li>
+			</ul>
 		</div>
 	</div>
 

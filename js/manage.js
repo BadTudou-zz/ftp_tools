@@ -12,7 +12,7 @@ function Login()
 		{
 			$("#header_userinfo_head").show();
 			$("#header_userinfo_name").html(json.msg);
-			$("#header_userinfo_state").text('在线').css({color:"#13E03C"});
+			$("#header_userinfo_state").text('当前在线').css({color:"#13E03C"});
 		}
 		else
 		{
@@ -131,7 +131,6 @@ $(document).ready(function()
         	var data = GetFileList('#folderTree','/'+path.join('/'), 0, node);}
 	);
 	GetFileList('#folderTree','/',0, 0);
-	//GetFileList('#folderList','/ftp',1);
 	Login();
 });
 
