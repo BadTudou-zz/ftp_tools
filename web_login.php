@@ -69,7 +69,6 @@
 			//$sessionID = session_id();
 			fopen(session_id().".json",'w+');
 			$files = $ftp_info->getFileList('/');
-
 			array_splice($files,array_search('.', $files),1);
 			array_splice($files,array_search('..', $files),1);
 			file_put_contents(session_id().".json", json_encode($files));

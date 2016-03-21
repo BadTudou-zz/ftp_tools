@@ -81,7 +81,10 @@
 			else
 			{
 				Login($ftpManage);
-				return json_encode($ftpManage->getFileList($file));
+				$files = $ftpManage->getFileList($file);
+				array_splice($files,array_search('.', $files),1);
+				array_splice($files,array_search('..', $files),1);
+				return json_encode($files);
 			}
 		}
 

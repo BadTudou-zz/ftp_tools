@@ -6,7 +6,7 @@ function Login()
 		dataType: 'JSON',
 		data: {'action':'Login'}
 	})
-	.done(function(json) 
+	.done(function(json)
 	{
 		if (json.state == 0)
 		{
@@ -19,7 +19,8 @@ function Login()
 			location.href = json.msg;
 		}
 	})
-	.error(function(info) {
+	.error(function(info) 
+	{
 		console.log('login fpt error which in manage.js'+info);
 	});
 }
@@ -49,7 +50,7 @@ function GetFileList(object, file, state, node)
 		dataType: 'JSON',
 		data: {'action':'GetFileList','file':file, 'state':state}
 	})
-	.done(function(json) 
+	.done(function(json)
 	{
 		console.log(file+json);
 		if (object == '#folderTree')
@@ -62,28 +63,17 @@ function GetFileList(object, file, state, node)
     				dragAndDrop: true
 				});
 			}
-			else
-			{
+			$('#folerviewlist').empty();
 				$.each(json, function(idx, obj) 
 				{
+					//$('#folerviewlist').append('<li><span>'+obj+'</span></li>');
+					$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
 					if (obj == file)
 					{
 						return ;
 					}
-					if (obj != '.' && obj != '..')
-					{
-						$('#folderTree').tree(
-    					'appendNode',
-    					obj,
-    					node);	
-					}
-
+					$('#folderTree').tree('appendNode', obj, node);
 				});
-			}
-		}
-		if (state == 1)
-		{
-			$(object).html(json);
 		}
 		return json;
 		
@@ -113,6 +103,7 @@ function ChangeDir(path)
 $(document).ready(function()
 {
 
+	//绑定单击文件树事件
 	$('#folderTree').bind
 	(
     	'tree.click',
@@ -130,6 +121,17 @@ $(document).ready(function()
         	console.log('click'+path.join('/'));
         	var data = GetFileList('#folderTree','/'+path.join('/'), 0, node);}
 	);
+
+	//绑定单击文件预览列表li事件
+	$('folerviewlist').each(function(index, el) {
+		
+		$(this).click(function(){
+			console.log(index);
+		
+		});
+		//console.log($this.val());
+		
+	});
 	GetFileList('#folderTree','/',0, 0);
 	Login();
 });

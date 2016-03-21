@@ -26,20 +26,20 @@
 				<div id="header_userinfo_name"></div>
 				<div id="header_userinfo_state"></div>
 			</div>
-			
-			<!---->
 		</div>
 	</div>
 
 	<div id="folder">
 		<div id="folderTree"></div>
 		<div id="folderList">
-			<div id="folderList_header"></div>
-			<ul>
-				<li><span>1</span></li>
-				<li><span>2</span></li>
-				<li><span>3</span></li>
-			</ul>
+			<div id="folderList_header">
+				<div id="folderList_header_path">
+					<img src="images/home.png"></div>
+				<div id="folderList_header_toolbar">工具栏</div>
+			</div>
+			<div id="folderList_body">
+				<ul id="folerviewlist"></ul>
+			</div>
 		</div>
 	</div>
 
