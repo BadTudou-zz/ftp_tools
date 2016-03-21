@@ -52,7 +52,12 @@ function GetFileList(object, file, state, node)
 	})
 	.done(function(json)
 	{
-		console.log(file+json);
+		if ($.isEmptyObject(json))
+		{
+			$('#folerviewlist').empty();
+			$('#folerviewlist').append('<li><a href="#">'+file+'</a></li>');
+			return ;
+		}
 		if (object == '#folderTree')
 		{
 			if (file == '/')
@@ -64,16 +69,11 @@ function GetFileList(object, file, state, node)
 				});
 			}
 			$('#folerviewlist').empty();
-				$.each(json, function(idx, obj) 
-				{
-					//$('#folerviewlist').append('<li><span>'+obj+'</span></li>');
-					$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
-					if (obj == file)
-					{
-						return ;
-					}
-					$('#folderTree').tree('appendNode', obj, node);
-				});
+			$.each(json, function(idx, obj) 
+			{
+				$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
+				$('#folderTree').tree('appendNode', obj, node);
+			});
 		}
 		return json;
 		
@@ -118,19 +118,15 @@ $(document).ready(function()
         		tmp = tmp.parent;
         	}
         	path.push(node.name);
-        	console.log('click'+path.join('/'));
-        	var data = GetFileList('#folderTree','/'+path.join('/'), 0, node);}
+        	var dirname = path.join('/');
+        	$('#folderList_header_path').text(dirname);
+        	GetFileList('#folderTree',''+dirname, 0, node);}
 	);
 
 	//绑定单击文件预览列表li事件
-	$('folerviewlist').each(function(index, el) {
-		
-		$(this).click(function(){
-			console.log(index);
-		
-		});
-		//console.log($this.val());
-		
+	$("#folerviewlist").on("click","li", function() 
+	{
+		console.log($(this).text());
 	});
 	GetFileList('#folderTree','/',0, 0);
 	Login();

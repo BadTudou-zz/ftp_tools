@@ -33,8 +33,11 @@
 		<div id="folderTree"></div>
 		<div id="folderList">
 			<div id="folderList_header">
+				<div id="folderList_header_logo">
+					<img src="images/home.png">
+				</div>
 				<div id="folderList_header_path">
-					<img src="images/home.png"></div>
+				</div>
 				<div id="folderList_header_toolbar">工具栏</div>
 			</div>
 			<div id="folderList_body">
