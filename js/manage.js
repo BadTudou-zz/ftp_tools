@@ -119,15 +119,23 @@ $(document).ready(function()
         	}
         	path.push(node.name);
         	var dirname = path.join('/');
-        	$('#folderList_header_path').text(dirname);
-        	GetFileList('#folderTree',''+dirname, 0, node);}
+        	$('#folderList_header_path').text('/'+dirname);
+        	GetFileList('#folderTree','/'+dirname, 0, node);}
 	);
 
 	//绑定单击文件预览列表li事件
 	$("#folerviewlist").on("click","li", function() 
 	{
-		console.log($(this).text());
+		var Folderpath = $('#folderList_header_path').text();
+		if (Folderpath == '/')
+		{
+			Folderpath = '';
+		}
+		var path = Folderpath+'/'+$(this).text();
+		console.log(path);
+		//GetFileList('#folerviewlist', ''+;
 	});
+	$('#folderList_header_path').text('/');
 	GetFileList('#folderTree','/',0, 0);
 	Login();
 });
