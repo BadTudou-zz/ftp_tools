@@ -34,11 +34,19 @@
 		<div id="folderList">
 			<div id="folderList_header">
 				<div id="folderList_header_logo">
-					<img src="images/home.png">
+					<a href="#" title="根目录"><img src="images/home.png"/></a>
 				</div>
 				<div id="folderList_header_path">
 				</div>
-				<div id="folderList_header_toolbar">工具栏</div>
+				<div id="folderList_header_back">
+					<a href="#" title="上一级"><img src="images/left.png" style="width: 40px" /></a>
+				</div>
+				<div id="folderList_header_toolbar">
+						<a href="#"><img src="images/upload.png"><span>上传</span></a>
+						<a href="#"><img src="images/newfile.png"><span>新建文件</span></a>
+						<a href="#"><img src="images/newfolder.png"><span>新建文件夹</span></a>
+				 </div>
+
 			</div>
 			<div id="folderList_body">
 				<ul id="folerviewlist"></ul>

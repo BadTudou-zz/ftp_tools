@@ -52,14 +52,19 @@ function GetFileList(object, file, node)
 	})
 	.done(function(json)
 	{
+		console.log('get file: '+file);
 		if ($.isEmptyObject(json))
 		{
+			
 			if (object == '#folderTree')
 			{
-				$('#folerviewlist').empty();
 				var pos = file.lastIndexOf('/')+1;
-				var showFile = file.substr(pos, file.length-pos);
+				$('#folerviewlist').empty();
+				//$('#folderList_header_path').text()
+				$('#folderList_header_path').text(file.substr(0, pos-1));
+				var showFile = file.substr(pos, file.length);
 				$('#folerviewlist').append('<li><a href="#">'+showFile+'</a></li>');
+				console.log(showFile+':'+file);
 			}
 			
 			return ;
@@ -72,8 +77,9 @@ function GetFileList(object, file, node)
     			autoOpen: false,
     			dragAndDrop: true
 			});
-		}
 
+		}
+		$('#folderList_header_path').text(file);
 		$('#folerviewlist').empty();
 		$.each(json, function(idx, obj) 
 		{
@@ -83,6 +89,7 @@ function GetFileList(object, file, node)
 					$('#folderTree').tree('appendNode', obj, node);
 				}
 		});
+
 		return json;
 		
 	})
@@ -120,15 +127,16 @@ $(document).ready(function()
         	var node = event.node;
         	var path = new Array();
         	var tmp = node.parent;
-        	while ( (tmp.name != '') && (tmp.name != node.name) )
+        	path.push(node.name);
+        	while(tmp.name != '' )
         	{
         		path.push(tmp.name);
         		tmp = tmp.parent;
         	}
-        	path.push(node.name);
+        	path.reverse();
         	var dirname = path.join('/');
-        	$('#folderList_header_path').text('/'+dirname);
-        	GetFileList('#folderTree','/'+dirname, node);}
+        	console.log('ddd '+dirname);
+        	GetFileList('#folderTree', dirname, node);}
 	);
 
 	//绑定单击文件预览列表li事件
@@ -142,7 +150,30 @@ $(document).ready(function()
 		var path = Folderpath+'/'+$(this).text();
 		GetFileList('#folerviewlist', path, 0);
 	});
-	$('#folderList_header_path').text('/');
+
+	//绑定单击主页按钮事件
+	$('#folderList_header_logo').click(function(){
+		var path = $('#folderList_header_path').text();
+		if (path == '/')
+		{
+			return ;
+		}
+		GetFileList('#folderTree','/', 0);
+	});
+	//绑定单击主页按钮事件
+	$('#folderList_header_back').click(function(){
+		var path = $('#folderList_header_path').text();
+		if (path == '/')
+		{
+			return ;
+		}
+
+		var pos = path.lastIndexOf('/');
+		var file = path.substr(0, pos);
+		console.log('back tuo'+file);
+		GetFileList('#folerviewlist', file, 0);
+	});
+	//$('#folderList_header_path').text('/');
 	GetFileList('#folderTree','/', 0);
 	Login();
 });
