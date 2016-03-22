@@ -44,12 +44,12 @@
 					break;
 
 				case 'GetFileList':
-					echo GetFileList($ftpManage, $_POST['file'], $_POST['state']);
+					echo GetFileList($ftpManage, $_POST['file']);
 					break;
 
-				case 'ChangeDir':
+				/*case 'ChangeDir':
 					ChangeDir($ftpManage, $_POST['path']);
-					break;
+					break;*/
 
 				default:
 					# code...
@@ -72,7 +72,7 @@
 			sendAnswer(0, $ftpManage->getPWD());
 		}
 
-		function GetFileList(&$ftpManage, $file, $state)
+		function GetFileList(&$ftpManage, $file)
 		{
 			if ($file === '/')
 			{
@@ -88,10 +88,10 @@
 			}
 		}
 
-		function ChangeDir(&$ftpManage, $path)
+		/*function ChangeDir(&$ftpManage, $path)
 		{
 			return ($ftpManage->changeDir($path));
-		}
+		}*/
 
 		session_start();
 		//登录状态检查

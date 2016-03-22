@@ -42,39 +42,47 @@ function GetPwd()
 	})
 }
 
-function GetFileList(object, file, state, node)
+function GetFileList(object, file, node)
 {
 	$.ajax({
 		url: 'web_manage.php',
 		type: 'POST',
 		dataType: 'JSON',
-		data: {'action':'GetFileList','file':file, 'state':state}
+		data: {'action':'GetFileList','file':file}
 	})
 	.done(function(json)
 	{
 		if ($.isEmptyObject(json))
 		{
-			$('#folerviewlist').empty();
-			$('#folerviewlist').append('<li><a href="#">'+file+'</a></li>');
+			if (object == '#folderTree')
+			{
+				$('#folerviewlist').empty();
+				var pos = file.lastIndexOf('/')+1;
+				var showFile = file.substr(pos, file.length-pos);
+				$('#folerviewlist').append('<li><a href="#">'+showFile+'</a></li>');
+			}
+			
 			return ;
 		}
-		if (object == '#folderTree')
+
+		if (file == '/')
 		{
-			if (file == '/')
-			{
-				$('#folderTree').tree({
-    				data: json,
-    				autoOpen: false,
-    				dragAndDrop: true
-				});
-			}
-			$('#folerviewlist').empty();
-			$.each(json, function(idx, obj) 
-			{
-				$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
-				$('#folderTree').tree('appendNode', obj, node);
+			$('#folderTree').tree({
+    			data: json,
+    			autoOpen: false,
+    			dragAndDrop: true
 			});
 		}
+
+		$('#folerviewlist').empty();
+		$.each(json, function(idx, obj) 
+		{
+				$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
+				if (object == '#folderTree')
+				{
+					$('#folderTree').tree('appendNode', obj, node);
+				}
+		});
 		return json;
 		
 	})
@@ -83,7 +91,7 @@ function GetFileList(object, file, state, node)
 	})
 }
 
-function ChangeDir(path)
+/*function ChangeDir(path)
 {
 	$.ajax({
 		url: 'web_manage.php',
@@ -99,7 +107,7 @@ function ChangeDir(path)
 	})
 	
 }
-
+*/
 $(document).ready(function()
 {
 
@@ -120,7 +128,7 @@ $(document).ready(function()
         	path.push(node.name);
         	var dirname = path.join('/');
         	$('#folderList_header_path').text('/'+dirname);
-        	GetFileList('#folderTree','/'+dirname, 0, node);}
+        	GetFileList('#folderTree','/'+dirname, node);}
 	);
 
 	//绑定单击文件预览列表li事件
@@ -132,11 +140,10 @@ $(document).ready(function()
 			Folderpath = '';
 		}
 		var path = Folderpath+'/'+$(this).text();
-		console.log(path);
-		//GetFileList('#folerviewlist', ''+;
+		GetFileList('#folerviewlist', path, 0);
 	});
 	$('#folderList_header_path').text('/');
-	GetFileList('#folderTree','/',0, 0);
+	GetFileList('#folderTree','/', 0);
 	Login();
 });
 
