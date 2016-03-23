@@ -1,3 +1,5 @@
+
+
 function Login()
 {
 	$.ajax({
@@ -160,7 +162,7 @@ $(document).ready(function()
 		}
 		GetFileList('#folderTree','/', 0);
 	});
-	//绑定单击主页按钮事件
+	//绑定单击返回上一级按钮事件
 	$('#folderList_header_back').click(function(){
 		var path = $('#folderList_header_path').text();
 		if (path == '/')
@@ -173,7 +175,48 @@ $(document).ready(function()
 		console.log('back tuo'+file);
 		GetFileList('#folerviewlist', file, 0);
 	});
-	//$('#folderList_header_path').text('/');
+
+	//绑定单击文件上传按钮事件
+	$('#folderList_header_toolbar_upload').click(function(event)
+	{
+		console.log('click the upload bottom');
+		$('#fileupload').click();
+	});
+
+	//绑定单击新建文件按钮事件
+	$('#folderList_header_toolbar_newfile').click(function(event) 
+	{
+		var d = dialog({
+    		title: '欢迎',
+    		content: '欢迎使用 artDialog 对话框组件！'
+			});
+		d.show();
+	});
+
+	//绑定单击新建文件夹按钮事件
+	$('#folderList_header_toolbar_newfolder').click(function(event) 
+	{
+		var d = dialog({
+    		title: '欢迎',
+    		content: '欢迎使用 artDialog 对话框组件！'
+			});
+		d.show();
+	});
+
+	//文件上传控件处理函数
+	$('#fileupload').fileupload({
+    drop: function (e, data) {
+        $.each(data.files, function (index, file) {
+            alert('Dropped file: ' + file.name);
+        });
+    },
+    change: function (e, data) {
+        $.each(data.files, function (index, file) {
+            alert('Selected file: ' + file.name);
+        });
+        $("#folderList_opeate").show();
+    }
+});
 	GetFileList('#folderTree','/', 0);
 	Login();
 });

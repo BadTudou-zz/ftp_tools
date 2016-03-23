@@ -109,6 +109,7 @@
 	height: 60px;
 	border:solid 1px;
 }
+
 #folderList_body
 {
 	margin-top: 10px;
@@ -172,4 +173,12 @@
 	text-align: center;
 	word-break:break-all;
 	height: 30px;
+}
+
+#folderList_opeate
+{
+	display: none;
+	margin-top: 10px;
+	height: 60px;
+	border:solid 1px;
 }
