@@ -58,7 +58,7 @@
 			</div>
 			<div id="folderList_opeate">
 				<div id="folderList_opeate_upload">
-					<input id="fileupload" type="file" name="files[]" data-url="server/php/" hidden multiple>
+					<input id="fileupload" type="file" name="files[]" data-url="server/php/" hidden multiple/form-data>
 					<button type="submit" value="开始">
                 	    开始
                 	</button>

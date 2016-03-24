@@ -110,13 +110,11 @@
 	border:solid 1px;
 }
 
-#folderList_body
+
+#folderList ul li a:hover
 {
-	margin-top: 10px;
-	width: 100%;
-	height: 90%;
-	overflow-x:hidden;
-	border: solid 1px;
+	border-color:solid 2px;
+	color: #FF9900;
 }
 #folderList_header_logo
 {
@@ -164,7 +162,9 @@
 #folderList_header_toolbar a:hover
 {
 	border: solid 2px;
+	color: #FF9900;
 }
+
 #folderList_header_toolbar a span
 {
 	display: block;
@@ -181,4 +181,13 @@
 	margin-top: 10px;
 	height: 60px;
 	border:solid 1px;
+}
+
+#folderList_body
+{
+	margin-top: 5px;
+	width: 100%;
+	height: 90%;
+	overflow-x:hidden;
+	border: solid 1px;
 }

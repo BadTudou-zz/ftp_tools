@@ -47,6 +47,13 @@
 					echo GetFileList($ftpManage, $_POST['file']);
 					break;
 
+				case 'CreateFolder':
+					CreateFolder($ftpManage, $_POST['path'], $_POST['folder']);
+					break;
+
+				case 'CreateFile':
+					CreateFile($ftpManage, $_POST['path'], $_POST['file']);
+					break;
 				/*case 'ChangeDir':
 					ChangeDir($ftpManage, $_POST['path']);
 					break;*/
@@ -74,20 +81,39 @@
 
 		function GetFileList(&$ftpManage, $file)
 		{
-			if ($file === '/')
+
+			Login($ftpManage);
+			$files = $ftpManage->getFileList($file);
+			array_splice($files,array_search('.', $files),1);
+			array_splice($files,array_search('..', $files),1);
+			return json_encode($files);
+		}
+
+		function CreateFolder(&$ftpManage, $path, $folder)
+		{
+			Login($ftpManage);
+			if ($ftpManage->createFolder($_POST['path'], $_POST['folder']))
 			{
-				return file_get_contents(session_id().'.json');
+				sendAnswer(0, 'ok');
 			}
 			else
 			{
-				Login($ftpManage);
-				$files = $ftpManage->getFileList($file);
-				array_splice($files,array_search('.', $files),1);
-				array_splice($files,array_search('..', $files),1);
-				return json_encode($files);
+				sendAnswer(1, 'error');
 			}
 		}
 
+		function CreateFile(&$ftpManage, $path, $file)
+		{
+			Login($ftpManage);
+			if ($ftpManage->createFile($_POST['path'], $_POST['file']))
+			{
+				sendAnswer(0, 'ok');
+			}
+			else
+			{
+				sendAnswer(1, 'error');
+			}
+		}
 		/*function ChangeDir(&$ftpManage, $path)
 		{
 			return ($ftpManage->changeDir($path));

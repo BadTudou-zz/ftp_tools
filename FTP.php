@@ -99,6 +99,46 @@
 			return  ftp_size($this->m_resource, $file);
 		}
 
+		public function createFolder($path, $folder)
+		{
+			//echo json_encode($this->changeDir($path));
+			if ($this->changeDir($path))
+			{
+				if (ftp_mkdir($this->m_resource, $folder))
+				{
+					return true;
+				}
+
+			}
+			else
+			{
+				return false;
+			}
+			
+		}
+
+		public function createFile($path, $file)
+		{
+			//echo json_encode($this->changeDir($path));
+			if ($this->changeDir($path))
+			{
+
+
+				fopen($file, 'w+');
+				if ( @ftp_nb_put($this->m_resource, $file, $file,  FTP_ASCII) == FTP_FINISHED)
+				{
+					unlink($file);
+					return true;
+				}
+				else
+				{
+					unlink($file);
+					return false;
+				}
+				
+			}
+		}
+
 	}
 
 

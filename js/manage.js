@@ -1,5 +1,3 @@
-
-
 function Login()
 {
 	$.ajax({
@@ -25,23 +23,6 @@ function Login()
 	{
 		console.log('login fpt error which in manage.js'+info);
 	});
-}
-
-function GetPwd()
-{
-	$.ajax({
-		url: 'web_manage.php',
-		type: 'POST',
-		dataType: 'JSON',
-		data: {'action':'GetPWD'}
-	})
-	.done(function(json)
-	{
-		$("#folderTree").html(json.msg);
-		console.log(json);
-
-		return json.msg;
-	})
 }
 
 function GetFileList(object, file, node)
@@ -100,23 +81,72 @@ function GetFileList(object, file, node)
 	})
 }
 
-/*function ChangeDir(path)
+function CreateFolder(path, folder)
 {
 	$.ajax({
 		url: 'web_manage.php',
 		type: 'POST',
 		dataType: 'JSON',
-		data: {'action':'ChangeDir','path':path}
+		data: {'action':'CreateFolder','path':path, 'folder':folder}
 	})
-	.done(function() {
-		console.log("success");
+	.done(function(json) 
+	{
+		if (json.state == 0)
+		{
+			var path = $('#folderList_header_path').text();
+			GetFileList('#folderTree', path, 0);
+			var d = dialog({
+					    content: '新建文件夹成功'
+						});
+			d.show(document.getElementById('folderList_header_toolbar_newfolder'));
+			setTimeout(function () 
+			{
+    			d.close().remove();
+			}, 2000);
+
+			return true;
+		}
 	})
-	.fail(function() {
-		console.log("change dir error");
+	.fail(function(json) {
+		console.log("create folder error"+json);
+		return false;
 	})
-	
+
 }
-*/
+
+function CreateFile(path, file)
+{
+	$.ajax({
+		url: 'web_manage.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {'action':'CreateFile','path':path, 'file':file}
+	})
+	.done(function(json) 
+	{
+		if (json.state == 0)
+		{
+			var path = $('#folderList_header_path').text();
+			GetFileList('#folderTree', path, 0);
+			var d = dialog({
+					    content: '新建文件成功'
+						});
+			d.show(document.getElementById('folderList_header_toolbar_newfile'));
+			setTimeout(function () 
+			{
+    			d.close().remove();
+			}, 2000);
+
+			return true;
+		}
+	})
+	.fail(function(json) {
+		console.log("create file error"+json);
+		return false;
+	})
+
+}
+
 $(document).ready(function()
 {
 
@@ -187,20 +217,52 @@ $(document).ready(function()
 	$('#folderList_header_toolbar_newfile').click(function(event) 
 	{
 		var d = dialog({
-    		title: '欢迎',
-    		content: '欢迎使用 artDialog 对话框组件！'
-			});
-		d.show();
+    		title: '文件名',
+    		content: '<input id="filename" autofocus />',
+    		okValue: '确定',
+    		cancelValue: '取消',
+    		ok: function () 
+    		{
+        		var path = $('#folderList_header_path').text();
+        		var file = $('#filename').val();
+        		console.log('path:'+path);
+        		console.log('file'+file);
+        		CreateFile(path, file);
+        		return true;
+    		},
+    		
+    		cancel: function () 
+    		{
+
+    		}
+		});
+		d.show(document.getElementById('folderList_header_toolbar_newfile'));
 	});
 
 	//绑定单击新建文件夹按钮事件
 	$('#folderList_header_toolbar_newfolder').click(function(event) 
 	{
-		var d = dialog({
-    		title: '欢迎',
-    		content: '欢迎使用 artDialog 对话框组件！'
-			});
-		d.show();
+			var d = dialog({
+    		title: '文件夹名',
+    		content: '<input id="foldername" autofocus />',
+    		okValue: '确定',
+    		cancelValue: '取消',
+    		ok: function () 
+    		{
+        		var path = $('#folderList_header_path').text();
+        		var folder = $('#foldername').val();
+        		console.log('path:'+path);
+        		console.log('folder:'+folder);
+        		CreateFolder(path, folder);
+        		return true;
+    		},
+    		
+    		cancel: function () 
+    		{
+
+    		}
+		});
+		d.show(document.getElementById('folderList_header_toolbar_newfolder'));
 	});
 
 	//文件上传控件处理函数

@@ -67,11 +67,11 @@
 
 			//读取FTP文件列表，并写入SESSION
 			//$sessionID = session_id();
-			fopen(session_id().".json",'w+');
+			/*fopen(session_id().".json",'w+');
 			$files = $ftp_info->getFileList('/');
 			array_splice($files,array_search('.', $files),1);
 			array_splice($files,array_search('..', $files),1);
-			file_put_contents(session_id().".json", json_encode($files));
+			file_put_contents(session_id().".json", json_encode($files));*/
 			//fwrite($fJson, json_encode($ftp_info->getFileList('/')));
 			$ftp_info->close();
 		}
