@@ -27,7 +27,7 @@
 	<!-- <script type="text/javascript" src="js/jquery.contextMenu.js"></script> -->
 	<script type="text/javascript" src="js/tree.jquery.js"></script>
 	<script type="text/javascript" src="js/manage.js"></script>
-	<title>管理</title>
+	<title>FTP Tool Manage</title>
 </head>
 <body>
 	<div id="header">

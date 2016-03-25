@@ -12,7 +12,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>PHP作业管理</title>
+	<title>FTP Tools Login</title>
 	<link rel="stylesheet" type="text/css" href="css/login-style.css">
 	<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
 	<script type="text/javascript" src="js/jquery.cookie.js"></script>

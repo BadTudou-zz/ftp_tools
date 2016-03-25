@@ -1,3 +1,12 @@
+/*
+	Copyright © BadTudou, 2016
+	All rights reserved
+
+	Name	:	login.js
+	By		:	BadTudu
+	Date	:	2016年3月18日13:54:05
+	Note	:	登录FTP服务器
+*/
 $(document).ready(function() 
 {
 	$("input").focus(function(event) 
@@ -12,7 +21,7 @@ $(document).ready(function()
 	$('#ftp_user').val($.cookie('ftp_cookie[2]'));
 	$('#ftp_pwd').val($.cookie('ftp_cookie[3]'));
 
-	//检测所有输入项是否有值
+	//检测所有输入项是否有值，以决定是否启用提交按钮
 	$("input").hover(function(event) 
 	{
 		var bInputState = true;
@@ -23,6 +32,7 @@ $(document).ready(function()
 				bInputState = false;
 			}
 		});
+
 		if (bInputState)
 		{
 			$("#submit_button").removeAttr('disabled');
@@ -36,7 +46,7 @@ $(document).ready(function()
 		}
 	});
 
-	//提交表单，异步处理
+	//提交表单，登录FTP，成功则跳转至服务器返回的页面，失败则显示出错信息
 	$("#submit_button").click(function(event) 
 	{
 		$("#hintText").text("正在登陆FPT服务器......");
@@ -49,7 +59,6 @@ $(document).ready(function()
 		})
 		.done(function(json)
 		{
-			console.log(json);
 			if (json.state == 0)
 			{
 				$("#hintText").text("登陆成功");
@@ -58,7 +67,6 @@ $(document).ready(function()
 			else
 			{
 				$("#hintText").text(json.msg).addClass('hintError');
-				console.log(json.msg);
 			}
 		})
 		.error(function(json) 
