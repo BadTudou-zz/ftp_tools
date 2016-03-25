@@ -66,12 +66,12 @@
 			setcookie('ftp_cookie[3]', $ftp_pwd,  time()+3600*24);
 
 			//读取FTP文件列表，并写入SESSION
-			//$sessionID = session_id();
-			/*fopen(session_id().".json",'w+');
+			$filename = 'index/'.str_replace('.','_',$ftp_host).$ftp_user.'.json';
+			fopen($filename,'w+');
 			$files = $ftp_info->getFileList('/');
 			array_splice($files,array_search('.', $files),1);
 			array_splice($files,array_search('..', $files),1);
-			file_put_contents(session_id().".json", json_encode($files));*/
+			file_put_contents($filename, json_encode($files));
 			//fwrite($fJson, json_encode($ftp_info->getFileList('/')));
 			$ftp_info->close();
 		}

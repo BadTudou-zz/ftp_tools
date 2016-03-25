@@ -1,3 +1,4 @@
+var  gfile;
 function Login()
 {
 	$.ajax({
@@ -21,9 +22,43 @@ function Login()
 	})
 	.error(function(info) 
 	{
-		console.log('login fpt error which in manage.js'+info);
+		location.href = "index.php";
 	});
 }
+
+function GetFileIndex()
+{
+	$.ajax({
+		url: 'web_manage.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {'action':'GetFileIndex'}
+	})
+	.done(function(json)
+	{
+		$('#folderTree').tree({
+    		data: json,
+    		autoOpen: false,
+    		dragAndDrop: true
+		});
+
+		$('#folderList_header_path').text('/');
+		$('#folerviewlist').empty();
+		$.each(json, function(idx, obj) 
+		{
+				$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
+				/*if (object == '#folderTree')
+				{
+					$('#folderTree').tree('appendNode', obj, node);
+				}*/
+		});
+	})
+	.error(function(json) {
+		console.log('getFileIndexError:'+json);
+		/* Act on the event */
+	});
+}
+
 
 function GetFileList(object, file, node)
 {
@@ -43,11 +78,9 @@ function GetFileList(object, file, node)
 			{
 				var pos = file.lastIndexOf('/')+1;
 				$('#folerviewlist').empty();
-				//$('#folderList_header_path').text()
 				$('#folderList_header_path').text(file.substr(0, pos-1));
 				var showFile = file.substr(pos, file.length);
 				$('#folerviewlist').append('<li><a href="#">'+showFile+'</a></li>');
-				console.log(showFile+':'+file);
 			}
 			
 			return ;
@@ -81,6 +114,20 @@ function GetFileList(object, file, node)
 	})
 }
 
+function ShowDig(object ,msg)
+{
+	var path = $('#folderList_header_path').text();
+	GetFileList('#folderTree', path, 0);
+	var d = dialog({
+			    content: msg
+				});
+	d.show(document.getElementById(object));
+	setTimeout(function () 
+	{
+    	d.close().remove();
+	}, 2000);
+
+}
 function CreateFolder(path, folder)
 {
 	$.ajax({
@@ -93,17 +140,7 @@ function CreateFolder(path, folder)
 	{
 		if (json.state == 0)
 		{
-			var path = $('#folderList_header_path').text();
-			GetFileList('#folderTree', path, 0);
-			var d = dialog({
-					    content: '新建文件夹成功'
-						});
-			d.show(document.getElementById('folderList_header_toolbar_newfolder'));
-			setTimeout(function () 
-			{
-    			d.close().remove();
-			}, 2000);
-
+			ShowDig('folderList_header_toolbar_newfolder','创建文件夹成功');
 			return true;
 		}
 	})
@@ -116,7 +153,8 @@ function CreateFolder(path, folder)
 
 function CreateFile(path, file)
 {
-	$.ajax({
+	$.ajax(
+	{
 		url: 'web_manage.php',
 		type: 'POST',
 		dataType: 'JSON',
@@ -126,25 +164,99 @@ function CreateFile(path, file)
 	{
 		if (json.state == 0)
 		{
-			var path = $('#folderList_header_path').text();
-			GetFileList('#folderTree', path, 0);
-			var d = dialog({
-					    content: '新建文件成功'
-						});
-			d.show(document.getElementById('folderList_header_toolbar_newfile'));
-			setTimeout(function () 
-			{
-    			d.close().remove();
-			}, 2000);
-
+			ShowDig('folderList_header_toolbar_newfile','创建文件成功');
 			return true;
 		}
 	})
-	.fail(function(json) {
+	.fail(function(json) 
+	{
 		console.log("create file error"+json);
 		return false;
 	})
 
+}
+
+function FileOperate(action, args)
+{
+	var path = $('#folderList_header_path').text();
+	var file = gfile;
+	switch (action)
+	{
+		case 'open':
+			return;
+			break;
+
+		case 'download':
+			return;
+			break;
+
+		case 'delete':
+			console.log(path+file);
+			break;
+
+		case 'rename':
+			console.log(path+file);
+			return ;
+			break;
+	}
+	$.ajax({
+		url: 'web_manage.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {'action':action,'path':path, 'file':file, 'newfile':args}
+	})
+	.done(function(json) 
+	{
+		if (json.state == 0)
+		{
+			GetFileList('#folerviewlist', path, 0);
+			ShowDig(null, json.msg);
+		}
+	})
+	.fail(function(json) {
+		console.log("error"+json);
+	})
+	.always(function() {
+		console.log("complete");
+	});
+	
+	console.log(action);
+}
+
+function ShowContextMenu(object)
+{
+	var imageMenuData = [
+    		 [{
+        		text: "打开",
+        		func: function() 
+        		{
+            		FileOperate('open', 0);
+        		}
+   			 },
+    		 {
+        		text: "下载",
+        		func: function() 
+        		{
+            		FileOperate('download', 0);
+        		}
+        
+   			 },
+   			  {
+        		text: "删除",
+        		func: function() 
+        		{
+            		FileOperate('delete', 0);
+        		}
+    		}, 
+    		{
+        		text: "重命名",
+        		func: function() 
+        		{
+        			FileOperate('rename', 0);
+        		}
+    		}],
+		];
+		$(object).smartMenu(imageMenuData);
 }
 
 $(document).ready(function()
@@ -154,7 +266,7 @@ $(document).ready(function()
 	$('#folderTree').bind
 	(
     	'tree.click',
-    	function(event) 
+    	function(event)
     	{
         	var node = event.node;
         	var path = new Array();
@@ -167,12 +279,11 @@ $(document).ready(function()
         	}
         	path.reverse();
         	var dirname = path.join('/');
-        	console.log('ddd '+dirname);
         	GetFileList('#folderTree', dirname, node);}
 	);
 
 	//绑定单击文件预览列表li事件
-	$("#folerviewlist").on("click","li", function() 
+	$("#folerviewlist").on("click","li", function()
 	{
 		var Folderpath = $('#folderList_header_path').text();
 		if (Folderpath == '/')
@@ -183,8 +294,25 @@ $(document).ready(function()
 		GetFileList('#folerviewlist', path, 0);
 	});
 
+	$("body").on("contextmenu", 0, function(event)
+	{
+		event.preventDefault();
+	});
+
+	$("#folerviewlist").on("mouseenter","li", function(event)
+	{
+		gfile = $(this).text();
+	});
+
+	$("#folerviewlist").on("contextmenu","li", function(event)
+	{
+		event.stopPropagation();
+		ShowContextMenu($(this));
+		return false;
+	});
 	//绑定单击主页按钮事件
-	$('#folderList_header_logo').click(function(){
+	$('#folderList_header_logo').click(function()
+	{
 		var path = $('#folderList_header_path').text();
 		if (path == '/')
 		{
@@ -193,7 +321,8 @@ $(document).ready(function()
 		GetFileList('#folderTree','/', 0);
 	});
 	//绑定单击返回上一级按钮事件
-	$('#folderList_header_back').click(function(){
+	$('#folderList_header_back').click(function()
+	{
 		var path = $('#folderList_header_path').text();
 		if (path == '/')
 		{
@@ -202,7 +331,6 @@ $(document).ready(function()
 
 		var pos = path.lastIndexOf('/');
 		var file = path.substr(0, pos);
-		console.log('back tuo'+file);
 		GetFileList('#folerviewlist', file, 0);
 	});
 
@@ -211,17 +339,19 @@ $(document).ready(function()
 	{
 		console.log('click the upload bottom');
 		$('#fileupload').click();
+		console.log($('#fileupload').val());
 	});
 
 	//绑定单击新建文件按钮事件
-	$('#folderList_header_toolbar_newfile').click(function(event) 
+	$('#folderList_header_toolbar_newfile').click(function(event)
 	{
-		var d = dialog({
+		var d = dialog(
+		{
     		title: '文件名',
     		content: '<input id="filename" autofocus />',
     		okValue: '确定',
     		cancelValue: '取消',
-    		ok: function () 
+    		ok: function ()
     		{
         		var path = $('#folderList_header_path').text();
         		var file = $('#filename').val();
@@ -229,57 +359,78 @@ $(document).ready(function()
         		console.log('file'+file);
         		CreateFile(path, file);
         		return true;
-    		},
-    		
-    		cancel: function () 
-    		{
-
     		}
 		});
 		d.show(document.getElementById('folderList_header_toolbar_newfile'));
 	});
 
 	//绑定单击新建文件夹按钮事件
-	$('#folderList_header_toolbar_newfolder').click(function(event) 
+	$('#folderList_header_toolbar_newfolder').click(function(event)
 	{
-			var d = dialog({
-    		title: '文件夹名',
-    		content: '<input id="foldername" autofocus />',
-    		okValue: '确定',
-    		cancelValue: '取消',
-    		ok: function () 
-    		{
-        		var path = $('#folderList_header_path').text();
-        		var folder = $('#foldername').val();
-        		console.log('path:'+path);
-        		console.log('folder:'+folder);
-        		CreateFolder(path, folder);
-        		return true;
-    		},
-    		
-    		cancel: function () 
-    		{
-
-    		}
-		});
-		d.show(document.getElementById('folderList_header_toolbar_newfolder'));
+			var d = dialog(
+			{
+    			title: '文件夹名',
+    			content: '<input id="foldername" autofocus />',
+    			okValue: '确定',
+    			cancelValue: '取消',
+    			ok: function ()
+    			{
+        			var path = $('#folderList_header_path').text();
+        			var folder = $('#foldername').val();
+        			CreateFolder(path, folder);
+        			return true;
+    			}
+			});
+			d.show(document.getElementById('folderList_header_toolbar_newfolder'));
 	});
 
-	//文件上传控件处理函数
-	$('#fileupload').fileupload({
-    drop: function (e, data) {
-        $.each(data.files, function (index, file) {
-            alert('Dropped file: ' + file.name);
-        });
-    },
-    change: function (e, data) {
-        $.each(data.files, function (index, file) {
-            alert('Selected file: ' + file.name);
-        });
-        $("#folderList_opeate").show();
-    }
-});
-	GetFileList('#folderTree','/', 0);
+	/*//文件上传控件处理函数
+	$('#fileupload').fileupload(
+	{
+    	drop: function (e, data)
+    	{
+        	$.each(data.files, function (index, file)
+        	{
+            	alert('Dropped file: ' + file.name);
+        	});
+    	},
+    	change: function (e, data)
+    	{
+        	$.each(data.files, function (index, file)
+        	{
+            	alert('Selected file: ' + file.name);
+        	});
+        	$("#folderList_opeate").show();
+    	}
+	});*/
+
+	//上传开始
+	$('#bn_upload_start').click(function(event)
+	{
+		console.log('start');
+		console.log($('#fileupload').val());
+		/*$.ajax(
+		{
+			url: 'web_manage.php',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {'action':'UploadFile','path':path, 'files':#fileupload}
+		})
+		.done(function() {
+			console.log("success");
+		})
+		.fail(function() {
+			console.log("error");
+		})
+		.always(function() {
+			console.log("complete");
+		});*/
+		
+	});
+
 	Login();
+	GetFileIndex();
+	GetFileList('#folderTree','/', 0);
+	
 });
 

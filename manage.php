@@ -13,15 +13,18 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="css/jqtree/jqtree.css">
 	<link rel="stylesheet" type="text/css" href="css/manage-style.css">
-	<link rel="stylesheet" type="text/css" href="css/jquery.fileupload.css">
+	<!-- <link rel="stylesheet" type="text/css" href="css/jquery.fileupload.css"> -->
 	<link rel="stylesheet" type="text/css" href="css/ui-dialog.css">
+	<link rel="stylesheet" type="text/css" href="css/smartMenu.css">
 	<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
-	<script type="text/javascript" src="js/vendor/jquery.ui.widget.js"></script>
-	<script type="text/javascript" src="js/jquery.iframe-transport.js"></script>
-	<script type="text/javascript" src="js/jquery.fileupload.js"></script>
-	<script type="text/javascript" src="js/jquery.fileupload-ui.js"></script>
-	<script type="text/javascript" src="js/jquery.fileupload-process.js"></script>
+	<!-- <script type="text/javascript" src="js/vendor/jquery.ui.widget.js"></script> -->
+	<!-- <script type="text/javascript" src="js/jquery.iframe-transport.js"></script> -->
+<!-- 	<script type="text/javascript" src="js/jquery.fileupload.js"></script>
+	 -->	<!-- <script type="text/javascript" src="js/jquery.fileupload-ui.js"></script> -->
+	<!-- <script type="text/javascript" src="js/jquery.fileupload-process.js"></script> -->
 	<script type="text/javascript" src="js/dialog-min.js"></script>
+	<script type="text/javascript" src="js/jquery-smartMenu-min.js"></script>
+	<!-- <script type="text/javascript" src="js/jquery.contextMenu.js"></script> -->
 	<script type="text/javascript" src="js/tree.jquery.js"></script>
 	<script type="text/javascript" src="js/manage.js"></script>
 	<title>管理</title>
@@ -59,7 +62,7 @@
 			<div id="folderList_opeate">
 				<div id="folderList_opeate_upload">
 					<input id="fileupload" type="file" name="files[]" data-url="server/php/" hidden multiple/form-data>
-					<button type="submit" value="开始">
+					<button type="submit" id="bn_upload_start" value="开始">
                 	    开始
                 	</button>
                 	<button type="submit">

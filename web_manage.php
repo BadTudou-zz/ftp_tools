@@ -35,12 +35,11 @@
 			
 			switch ($action)
 			{
+				case 'GetFileIndex':
+					GetFileIndex();
+					break;
 				case 'Login':
 					sendAnswer(0, $_SESSION['ftp_user']);
-					break;
-				
-				case 'GetPWD':
-					GetPWD($ftpManage);
 					break;
 
 				case 'GetFileList':
@@ -53,6 +52,14 @@
 
 				case 'CreateFile':
 					CreateFile($ftpManage, $_POST['path'], $_POST['file']);
+					break;
+
+				case 'UploadFile':
+					UploadFile($ftpManage, $_POST['path']);
+					break;
+
+				case 'delete':
+					DeleteFile($ftpManage, $_POST['path'], $_POST['file']);
 					break;
 				/*case 'ChangeDir':
 					ChangeDir($ftpManage, $_POST['path']);
@@ -71,6 +78,7 @@
 			$ftpManage->login();
 
 			//读取文件，并将其写入json中
+			
 
 		}
 
@@ -79,9 +87,22 @@
 			sendAnswer(0, $ftpManage->getPWD());
 		}
 
+		function GetFileIndex()
+		{
+			$filename = 'index/'.str_replace('.','_',$_SESSION['ftp_host'].$_SESSION['ftp_user']).'.json';
+			echo file_get_contents($filename);
+		}
+		/*function WriteToIndex()
+		{
+			$filename = 'index/'.str_replace('.','_',$ftp_host).$ftp_user.'.json';
+			fopen($filename,'w+');
+			$files = $ftp_info->getFileList('/');
+			array_splice($files,array_search('.', $files),1);
+			array_splice($files,array_search('..', $files),1);
+			file_put_contents($filename.".json", json_encode($files));
+		}*/
 		function GetFileList(&$ftpManage, $file)
 		{
-
 			Login($ftpManage);
 			$files = $ftpManage->getFileList($file);
 			array_splice($files,array_search('.', $files),1);
@@ -114,10 +135,24 @@
 				sendAnswer(1, 'error');
 			}
 		}
-		/*function ChangeDir(&$ftpManage, $path)
+
+		function UploadFile(&$ftpManage, $path)
 		{
-			return ($ftpManage->changeDir($path));
-		}*/
+			 echo json_encode(print_r($_FILES["files"]));
+		}
+
+		function DeleteFile(&$ftpManage, $path, $file)
+		{
+			Login($ftpManage);
+			if ($ftpManage->deleteFile($path. $file))
+			{
+				sendAnswer(0, '删除成功');
+			}
+			else
+			{
+				sendAnswer(1, '删除失败');
+			}
+		}
 
 		session_start();
 		//登录状态检查

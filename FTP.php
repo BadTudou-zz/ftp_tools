@@ -119,7 +119,6 @@
 
 		public function createFile($path, $file)
 		{
-			//echo json_encode($this->changeDir($path));
 			if ($this->changeDir($path))
 			{
 
@@ -137,6 +136,11 @@
 				}
 				
 			}
+		}
+
+		public function deleteFile($filepath)
+		{
+			return ftp_delete($this->m_resource, $filepath);
 		}
 
 	}
