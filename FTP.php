@@ -249,6 +249,16 @@
 			array_splice($files,array_search('..', $files),1);
 			file_put_contents($filename, json_encode($files));
 		}
+
+		public function rename($path, $oldname, $newname)
+		{
+			if ($this->changeDir($path))
+			{
+				return ftp_rename($this->m_resource, $oldname, $newname);
+			}
+
+			return false;
+		}
 	}
 
 

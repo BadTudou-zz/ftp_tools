@@ -140,4 +140,17 @@
 				SendAnswer(1, '删除失败');
 			}
 		}
+
+		function RenameFile(&$ftpManage, $path, $file, $newname)
+		{
+			Login($ftpManage);
+			if ($ftpManage->rename($path, $file, $newname))
+			{
+				SendAnswer(0, '重命名成功');
+			}
+			else
+			{
+				SendAnswer(1, '重命名失败');
+			}
+		}
 ?>

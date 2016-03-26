@@ -1,4 +1,12 @@
-var  gfile;
+/*
+		Copyright © BadTudou, 2016
+		All rights reserved
+
+		Name	:	manage.js
+		By		:	BadTudu
+		Date	:	2016年3月18日13:54:05
+		Note	:	FTP文件管理的JQuery脚本
+*/
 function Login()
 {
 	$.ajax({
@@ -47,10 +55,6 @@ function GetFileIndex()
 		$.each(json, function(idx, obj) 
 		{
 				$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
-				/*if (object == '#folderTree')
-				{
-					$('#folderTree').tree('appendNode', obj, node);
-				}*/
 		});
 	})
 	.error(function(json) {
@@ -119,6 +123,7 @@ function ShowDig(object ,msg)
 	var path = $('#folderList_header_path').text();
 	GetFileList('#folderTree', path, 0);
 	var d = dialog({
+				align: 'bottom',
 			    content: msg
 				});
 	d.show(document.getElementById(object));
@@ -176,10 +181,9 @@ function CreateFile(path, file)
 
 }
 
-function FileOperate(action, args)
+function FileOperate(action, file, args)
 {
 	var path = $('#folderList_header_path').text();
-	var file = gfile;
 	switch (action)
 	{
 		case 'open':
@@ -195,22 +199,21 @@ function FileOperate(action, args)
 			break;
 
 		case 'rename':
-			console.log(path+file);
-			return ;
+			console.log(path+file+'new file name'+args);
 			break;
 	}
 	$.ajax({
 		url: 'web_manage.php',
 		type: 'POST',
 		dataType: 'JSON',
-		data: {'action':action,'path':path, 'file':file, 'newfile':args}
+		data: {'action':action,'path':path, 'file':file, 'newname':args}
 	})
 	.done(function(json) 
 	{
 		if (json.state == 0)
 		{
+			ShowDig('folderList_header', json.msg);
 			GetFileList('#folerviewlist', path, 0);
-			ShowDig(null, json.msg);
 		}
 	})
 	.fail(function(json) {
@@ -230,14 +233,14 @@ function ShowContextMenu(object)
         		text: "打开",
         		func: function() 
         		{
-            		FileOperate('open', 0);
+            		FileOperate('open', $(this).text(), 0);
         		}
    			 },
     		 {
         		text: "下载",
         		func: function() 
         		{
-            		FileOperate('download', 0);
+            		FileOperate('download', $(this).text(), 0);
         		}
         
    			 },
@@ -245,15 +248,34 @@ function ShowContextMenu(object)
         		text: "删除",
         		func: function() 
         		{
-            		FileOperate('delete', 0);
+            		FileOperate('delete', $(this).text(), 0);
         		}
     		}, 
     		{
         		text: "重命名",
         		func: function() 
         		{
-        			FileOperate('rename', 0);
-        		}
+        			var file = $(this).text();
+        			var newname = null;
+        			var d = dialog(
+					{
+    					title: '新的文件名',
+    					align: 'top',
+    					content: '<input id="filename" autofocus />',
+    					okValue: '确定',
+    					cancelValue: '取消',
+    					ok: function ()
+    					{
+        					newname = $('#filename').val();
+			        		console.log('file'+newname);
+			        		//FileOperate('rename', newname);
+			        		FileOperate('rename', file, newname);
+        					return true;
+    					}
+    				});
+					d.show(document.getElementById('folderList_header'));
+        			
+				}
     		}],
 		];
 		$(object).smartMenu(imageMenuData);
@@ -301,7 +323,7 @@ $(document).ready(function()
 
 	$("#folerviewlist").on("mouseenter","li", function(event)
 	{
-		gfile = $(this).text();
+		//gfile = $(this).text();
 	});
 
 	$("#folerviewlist").on("contextmenu","li", function(event)

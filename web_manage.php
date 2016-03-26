@@ -55,6 +55,10 @@
 				case 'delete':
 					DeleteFile($ftpManage, $_POST['path'], $_POST['file']);
 					break;
+
+				case 'rename':
+					RenameFile($ftpManage, $_POST['path'], $_POST['file'], $_POST['newname']);
+					break;
 				/*case 'ChangeDir':
 					ChangeDir($ftpManage, $_POST['path']);
 					break;*/
