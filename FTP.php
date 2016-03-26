@@ -250,6 +250,14 @@
 			file_put_contents($filename, json_encode($files));
 		}
 
+		/**
+		 * [文件重命名]
+		 * @param [string] $path       [路径]
+		 * @param [string] $file       [文件/文件夹]
+		 * @param [string] $oldname    [旧的文件名/文件夹名]
+		 * @param [string] $newname    [新的文件名/文件夹名]
+		 * @return [bool]         [true:成功; false:失败]
+		 */
 		public function rename($path, $oldname, $newname)
 		{
 			if ($this->changeDir($path))
@@ -258,6 +266,21 @@
 			}
 
 			return false;
+		}
+
+		public function downloadFile($remotefile, $localfile)
+		{
+			$ret = ftp_nb_get($this->m_resource, $localfile, $remotefile, FTP_ASCII);
+			while ($ret == FTP_MOREDATA)
+			{
+				$ret = ftp_nb_continue ($this->m_resource);
+			}
+			if ($ret != FTP_FINISHED)
+			{
+				return false;
+			}
+
+			return true;
 		}
 	}
 

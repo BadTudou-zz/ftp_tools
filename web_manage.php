@@ -59,6 +59,10 @@
 				case 'rename':
 					RenameFile($ftpManage, $_POST['path'], $_POST['file'], $_POST['newname']);
 					break;
+
+				case 'download':
+					$filepath = 'tmp/'.str_replace('.','_',$ftpManage->getHost()).$ftpManage->getUser().$_POST['file'];
+					DownloadFile($ftpManage, $_POST['path'], $_POST['file'], $filepath);
 				/*case 'ChangeDir':
 					ChangeDir($ftpManage, $_POST['path']);
 					break;*/

@@ -141,6 +141,13 @@
 			}
 		}
 
+		/**
+		 * [文件/文件夹重命名]
+		 * @param [string] &$ftpManage [FTP对象]
+		 * @param [string] $path       [路径]
+		 * @param [string] $file       [文件/文件夹]
+		 * @param [string] $newname    [新的文件名/文件夹名]
+		 */
 		function RenameFile(&$ftpManage, $path, $file, $newname)
 		{
 			Login($ftpManage);
@@ -153,4 +160,26 @@
 				SendAnswer(1, '重命名失败');
 			}
 		}
+
+		function DownloadFile(&$ftpManage, $path, $file, $localfile)
+		{
+			Login($ftpManage);
+			if ($ftpManage->downloadFile($path.$file, $localfile))
+			{
+				//$ext = substr($file, strripos($file, '.')+1);
+				//$fileurl = 'http://'.dirname($_SERVER['SCRIPT_NAME$localfile;
+				//header('Content-type: application/'.$ext);
+				//header('Content-Disposition: attachment; filename="'.$file);
+				//readfile($localfile);
+				//Header('Location:'.$fileurl);*/
+				
+				SendAnswer(0, $localfile);
+			}
+			else
+			{
+				SendAnswer(1, '下载失败');
+			}
+		}
+
+
 ?>

@@ -187,11 +187,12 @@ function FileOperate(action, file, args)
 	switch (action)
 	{
 		case 'open':
+			console.log(path+file);
 			return;
 			break;
 
 		case 'download':
-			return;
+			console.log('download file'+path+file);
 			break;
 
 		case 'delete':
@@ -214,6 +215,8 @@ function FileOperate(action, file, args)
 		{
 			ShowDig('folderList_header', json.msg);
 			GetFileList('#folerviewlist', path, 0);
+			location.href = json.msg;
+			console.log(json.msg);
 		}
 	})
 	.fail(function(json) {
