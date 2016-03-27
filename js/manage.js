@@ -20,8 +20,10 @@ function Login()
 		if (json.state == 0)
 		{
 			$("#header_userinfo_head").show();
-			$("#header_userinfo_name").html(json.msg);
+			$("#header_userinfo_name").html($.cookie('ftp_cookie[2]'));
+			$('#folderList_header_path').text(json.msg);
 			$("#header_userinfo_state").text('当前在线').css({color:"#13E03C"});
+			GetFileIndex(json.msg);
 		}
 		else
 		{
@@ -30,11 +32,12 @@ function Login()
 	})
 	.error(function(info) 
 	{
-		location.href = "index.php";
+		console.log(info);
+		//location.href = "index.php";
 	});
 }
 
-function GetFileIndex()
+function GetFileIndex(rootpath)
 {
 	$.ajax({
 		url: 'web_manage.php',
@@ -44,17 +47,15 @@ function GetFileIndex()
 	})
 	.done(function(json)
 	{
-		$('#folderTree').tree({
-    		data: json,
-    		autoOpen: false,
-    		dragAndDrop: true
-		});
-
-		$('#folderList_header_path').text('/');
+		var data = [{label:rootpath, id:1}];
+		var $tree = $('#folderTree');
+		$tree.tree({data:data});
+		var node = $('#folderTree').tree('getNodeById', 1);
 		$('#folerviewlist').empty();
 		$.each(json, function(idx, obj) 
 		{
 				$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
+				$('#folderTree').tree('appendNode', obj, node);
 		});
 	})
 	.error(function(json) {
@@ -90,15 +91,16 @@ function GetFileList(object, file, node)
 			return ;
 		}
 
-		if (file == '/')
-		{
-			$('#folderTree').tree({
-    			data: json,
-    			autoOpen: false,
-    			dragAndDrop: true
-			});
+		while (node.children.length != 0)
+        	{
+        		for (var i=0; i < node.children.length; i++) 
+        	{
+    			var child = node.children[i];
+    			console.log(child.name);
+    			$('#folderTree').tree('removeNode', child);
 
-		}
+			}
+        	}
 		$('#folderList_header_path').text(file);
 		$('#folerviewlist').empty();
 		$.each(json, function(idx, obj) 
@@ -303,8 +305,11 @@ $(document).ready(function()
         		tmp = tmp.parent;
         	}
         	path.reverse();
+        	console.log(node.children.length);
+        	//
         	var dirname = path.join('/');
-        	GetFileList('#folderTree', dirname, node);}
+        	GetFileList('#folderTree', dirname, node);
+        	}
 	);
 
 	//绑定单击文件预览列表li事件
@@ -454,8 +459,7 @@ $(document).ready(function()
 	});
 
 	Login();
-	GetFileIndex();
-	GetFileList('#folderTree','/', 0);
+	//GetFileList('#folderTree','/', 0);
 	
 });
 

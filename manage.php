@@ -17,6 +17,7 @@
 	<link rel="stylesheet" type="text/css" href="css/ui-dialog.css">
 	<link rel="stylesheet" type="text/css" href="css/smartMenu.css">
 	<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
 	<!-- <script type="text/javascript" src="js/vendor/jquery.ui.widget.js"></script> -->
 	<!-- <script type="text/javascript" src="js/jquery.iframe-transport.js"></script> -->
 <!-- 	<script type="text/javascript" src="js/jquery.fileupload.js"></script>

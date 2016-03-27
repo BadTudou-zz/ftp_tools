@@ -23,12 +23,14 @@
 			$vPort = $ftpManage->getPort();
 			$vUser = $ftpManage->getUser();
 			$vPWD  = $ftpManage->getPWD();
+			$vRoot = $ftpManage->getCurrentPath();
 
 			$_SESSION['ftp_login'] = true;
 			$_SESSION['ftp_host']  = $vHost;
 			$_SESSION['ftp_port']  = $vPort;
 			$_SESSION['ftp_user']  = $vUser;
 			$_SESSION['ftp_pwd']   = $vPWD;
+			$_SESSION['ftp_root']  = $vRoot;
 
 			//FTP信息写入cookie
 			$timeOut = time()+3600*24;
@@ -36,6 +38,7 @@
 			setcookie('ftp_cookie[1]', $vPort,  $timeOut);
 			setcookie('ftp_cookie[2]', $vUser,  $timeOut);
 			setcookie('ftp_cookie[3]', $vPWD,  $timeOut);
+			setcookie('ftp_cookie[3]', $vRoot,  $timeOut);
 
 			//读取FTP文件列表，并写入配置文件
 			$ftpManage->writeIndex();
@@ -50,6 +53,11 @@
 			$ftpManage->connect();
 			$ftpManage->login();
 			$ftpManage->writeIndex();
+		}
+
+		function GetPWD(&$ftpManage)
+		{
+			Login($ftpManage);
 		}
 
 		/**
@@ -69,9 +77,25 @@
 		function GetFileList(&$ftpManage, $path)
 		{
 			Login($ftpManage);
+			$size = strlen($path);
 			$files = $ftpManage->getFileList($path);
-			array_splice($files,array_search('.', $files),1);
-			array_splice($files,array_search('..', $files),1);
+			natsort($files);
+			$i = 0;
+			foreach ($files as $key => $value) 
+			{
+				$fronfile = substr($value, 0, $size);
+				if ( strcmp($fronfile,$path) == 0)
+				{
+					$files[$key] = substr($value,$size+1);
+				}
+				if ((strcmp($value,'.') == 0) || (strcmp($value,'..') == 0))
+				{
+					array_splice($files, $i,1);
+					$i--;
+				}
+				# code...
+				$i++;
+			}
 			echo json_encode($files);
 		}
 

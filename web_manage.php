@@ -33,9 +33,8 @@
 					break;
 
 				case 'Login':
-					sendAnswer(0, $_SESSION['ftp_user']);
+					SendAnswer(0, $_SESSION['ftp_root']);
 					break;
-
 				case 'GetFileList':
 					GetFileList($ftpManage, $_POST['file']);
 					break;

@@ -83,7 +83,6 @@
 				if ($this->getLoginState())
 				{
 					SendAnswer(0 , 'manage.php');
-					session_start();
 					CreateSession($this);
 					$this->close();
 				}
@@ -150,6 +149,11 @@
 		public function getPWD()
 		{
 			return $this->m_pwd;
+		}
+
+		public function getCurrentPath()
+		{
+			return ftp_pwd($this->m_resource);
 		}
 
 		/**
@@ -243,10 +247,27 @@
 		public function writeIndex()
 		{
 			$filename = 'index/'.str_replace('.','_',$this->m_host).$this->m_user.'.json';
+			$currentPath = $_SESSION['ftp_root'];
+			$size = strlen($currentPath);
 			fopen($filename,'w+');
-			$files = $this->getFileList('/');
-			array_splice($files,array_search('.', $files),1);
-			array_splice($files,array_search('..', $files),1);
+			$files = $this->getFileList($currentPath);
+			natsort($files);
+			$i = 0;
+			foreach ($files as $key => $value) 
+			{
+				$fronfile = substr($value, 0, $size);
+				if ( strcmp($fronfile,$currentPath) == 0)
+				{
+					$files[$key] = substr($value,$size+1);
+				}
+				if (strcmp($value,'.') == 0 || strcmp($value,'..') == 0)
+				{
+					array_splice($files, $i,1);
+					$i--;
+				}
+				# code...
+				$i++;
+			}
 			file_put_contents($filename, json_encode($files));
 		}
 
