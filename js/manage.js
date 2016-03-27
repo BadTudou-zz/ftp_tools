@@ -7,6 +7,20 @@
 		Date	:	2016年3月18日13:54:05
 		Note	:	FTP文件管理的JQuery脚本
 */
+var groot;
+function IsFileType(ext)
+{
+	var data = new Array('txt','php', 'html');
+	for (var i =0; i <data.length ; i++)
+	{
+		if (data[i] == ext)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
 function Login()
 {
 	$.ajax({
@@ -19,11 +33,18 @@ function Login()
 	{
 		if (json.state == 0)
 		{
+			groot = json.msg;
+			var sroot = groot;
+			if (groot != '/')
+			{
+				sroot = groot+'/';
+			}
 			$("#header_userinfo_head").show();
 			$("#header_userinfo_name").html($.cookie('ftp_cookie[2]'));
-			$('#folderList_header_path').text(json.msg);
+			$('#folderList_header_path').text(sroot);
 			$("#header_userinfo_state").text('当前在线').css({color:"#13E03C"});
-			GetFileIndex(json.msg);
+			GetFileIndex(groot);
+			
 		}
 		else
 		{
@@ -54,7 +75,21 @@ function GetFileIndex(rootpath)
 		$('#folerviewlist').empty();
 		$.each(json, function(idx, obj) 
 		{
-				$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
+				var pos = obj.lastIndexOf('.');
+				var ext = obj.substr(pos+1);
+				
+				if (IsFileType(ext))
+				{
+					console.log(obj+' icon');
+					var $elem = $('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png"><a href="#">'+obj+'</a></li>');
+				
+				}
+				else
+				{
+					var $elem = $('#folerviewlist').append('<li ><a href="#">'+obj+'</a></li>');
+				}
+
+				//$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
 				$('#folderTree').tree('appendNode', obj, node);
 		});
 	})
@@ -76,7 +111,6 @@ function GetFileList(object, file, node)
 	})
 	.done(function(json)
 	{
-		console.log('get file: '+file+json);
 		if ($.isEmptyObject(json))
 		{
 			
@@ -97,7 +131,20 @@ function GetFileList(object, file, node)
 		$('#folerviewlist').empty();
 		$.each(json, function(idx, obj) 
 		{
-				$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
+				var pos = obj.lastIndexOf('.');
+				var ext = obj.substr(pos+1);
+				
+				if (IsFileType(ext))
+				{
+					console.log(obj+' icon');
+					var $elem = $('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png"><a href="#">'+obj+'</a></li>');
+				
+				}
+				else
+				{
+					$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');					
+				}
+
 				if (object == '#folderTree')
 				{
 					$('#folderTree').tree('appendNode', obj, node);
@@ -294,16 +341,21 @@ $(document).ready(function()
     	{
         	var node = event.node;
         	var path = new Array();
-        	var tmp = node.parent;
-        	path.push('/');
-        	path.push(node.name);
-        	while(tmp.name != '' && tmp.name != node.name )
+        	var tmp = node;
+
+        	
+        	while(tmp.name != '') 
         	{
-        		path.push('/');
+        		if (tmp.name != '/')
+        		{
+        			path.push('/');
+        		}
         		path.push(tmp.name);
         		tmp = tmp.parent;
         	}
+
         	path.reverse();
+        	var dirname=path.join('');
         	console.log(node.children.length);
         	while (node.children.length != 0)
         	{
@@ -315,7 +367,7 @@ $(document).ready(function()
 
 			}
         	}
-        	var dirname=path.join('');
+        	
         	console.log('tree '+dirname);
         	GetFileList('#folderTree', dirname, node);
         	}
@@ -336,7 +388,7 @@ $(document).ready(function()
 
 	$("#folerviewlist").on("mouseenter","li", function(event)
 	{
-		//gfile = $(this).text();
+		console.log($(this).text());
 	});
 
 	$("#folerviewlist").on("contextmenu","li", function(event)
@@ -348,18 +400,20 @@ $(document).ready(function()
 	//绑定单击主页按钮事件
 	$('#folderList_header_logo').click(function()
 	{
-		var path = $('#folderList_header_path').text();
-		if (path == '/')
+		if (groot == '/')
 		{
-			return ;
+			GetFileList('#folerviewlist','/', 0);
 		}
-		GetFileList('#folderTree','/', 0);
+		else
+		{
+			GetFileList('#folerviewlist',groot+'/', 0);
+		}
 	});
 	//绑定单击返回上一级按钮事件
 	$('#folderList_header_back').click(function()
 	{
 		var path = $('#folderList_header_path').text();
-		if (path == '/')
+		if (path == groot)
 		{
 			return ;
 		}
