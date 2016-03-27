@@ -291,7 +291,7 @@
 
 		public function downloadFile($remotefile, $localfile)
 		{
-			$ret = ftp_nb_get($this->m_resource, $localfile, $remotefile, FTP_ASCII);
+			$ret = ftp_nb_get($this->m_resource, $localfile, $remotefile,  FTP_BINARY);
 			while ($ret == FTP_MOREDATA)
 			{
 				$ret = ftp_nb_continue ($this->m_resource);

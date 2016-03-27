@@ -52,7 +52,7 @@
 		{
 			$ftpManage->connect();
 			$ftpManage->login();
-			$ftpManage->writeIndex();
+			//$ftpManage->writeIndex();
 		}
 
 		function GetPWD(&$ftpManage)
@@ -76,19 +76,22 @@
 		 */
 		function GetFileList(&$ftpManage, $path)
 		{
+			
+	
 			Login($ftpManage);
-			$size = strlen($path);
-			$files = $ftpManage->getFileList($path);
+			$currentPath = $path;
+			$size = strlen($currentPath);
+			$files = $ftpManage->getFileList($currentPath);
 			natsort($files);
 			$i = 0;
 			foreach ($files as $key => $value) 
 			{
 				$fronfile = substr($value, 0, $size);
-				if ( strcmp($fronfile,$path) == 0)
+				if ( strcmp($fronfile,$currentPath) == 0)
 				{
-					$files[$key] = substr($value,$size+1);
+					$files[$key] = substr($value,$size);
 				}
-				if ((strcmp($value,'.') == 0) || (strcmp($value,'..') == 0))
+				if (strcmp($value,'.') == 0 || strcmp($value,'..') == 0)
 				{
 					array_splice($files, $i,1);
 					$i--;
@@ -96,6 +99,7 @@
 				# code...
 				$i++;
 			}
+
 			echo json_encode($files);
 		}
 
@@ -190,14 +194,8 @@
 			Login($ftpManage);
 			if ($ftpManage->downloadFile($path.$file, $localfile))
 			{
-				//$ext = substr($file, strripos($file, '.')+1);
-				//$fileurl = 'http://'.dirname($_SERVER['SCRIPT_NAME$localfile;
-				//header('Content-type: application/'.$ext);
-				//header('Content-Disposition: attachment; filename="'.$file);
-				//readfile($localfile);
-				//Header('Location:'.$fileurl);*/
-				
-				SendAnswer(0, $localfile);
+				$fileurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['SCRIPT_NAME']).'/download.php?file='.$file.'&downloadfile='.$localfile;
+				SendAnswer(0, $fileurl);
 			}
 			else
 			{

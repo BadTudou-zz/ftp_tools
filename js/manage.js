@@ -49,7 +49,7 @@ function GetFileIndex(rootpath)
 	{
 		var data = [{label:rootpath, id:1}];
 		var $tree = $('#folderTree');
-		$tree.tree({data:data});
+		$tree.tree({data:data, autoOpen: true});
 		var node = $('#folderTree').tree('getNodeById', 1);
 		$('#folerviewlist').empty();
 		$.each(json, function(idx, obj) 
@@ -67,6 +67,7 @@ function GetFileIndex(rootpath)
 
 function GetFileList(object, file, node)
 {
+	console.log('function '+file);
 	$.ajax({
 		url: 'web_manage.php',
 		type: 'POST',
@@ -75,7 +76,7 @@ function GetFileList(object, file, node)
 	})
 	.done(function(json)
 	{
-		console.log('get file: '+file);
+		console.log('get file: '+file+json);
 		if ($.isEmptyObject(json))
 		{
 			
@@ -91,16 +92,7 @@ function GetFileList(object, file, node)
 			return ;
 		}
 
-		while (node.children.length != 0)
-        	{
-        		for (var i=0; i < node.children.length; i++) 
-        	{
-    			var child = node.children[i];
-    			console.log(child.name);
-    			$('#folderTree').tree('removeNode', child);
-
-			}
-        	}
+		
 		$('#folderList_header_path').text(file);
 		$('#folerviewlist').empty();
 		$.each(json, function(idx, obj) 
@@ -215,9 +207,14 @@ function FileOperate(action, file, args)
 	{
 		if (json.state == 0)
 		{
+			if (action == 'download')
+			{
+				window.open(json.msg, 'download');
+				return true;
+			}
 			ShowDig('folderList_header', json.msg);
 			GetFileList('#folerviewlist', path, 0);
-			location.href = json.msg;
+
 			console.log(json.msg);
 		}
 	})
@@ -298,16 +295,28 @@ $(document).ready(function()
         	var node = event.node;
         	var path = new Array();
         	var tmp = node.parent;
+        	path.push('/');
         	path.push(node.name);
-        	while(tmp.name != '' )
+        	while(tmp.name != '' && tmp.name != node.name )
         	{
+        		path.push('/');
         		path.push(tmp.name);
         		tmp = tmp.parent;
         	}
         	path.reverse();
         	console.log(node.children.length);
-        	//
-        	var dirname = path.join('/');
+        	while (node.children.length != 0)
+        	{
+        		for (var i=0; i < node.children.length; i++) 
+        	{
+    			var child = node.children[i];
+    			//console.log(child.name);
+    			$('#folderTree').tree('removeNode', child);
+
+			}
+        	}
+        	var dirname=path.join('');
+        	console.log('tree '+dirname);
         	GetFileList('#folderTree', dirname, node);
         	}
 	);
@@ -316,11 +325,7 @@ $(document).ready(function()
 	$("#folerviewlist").on("click","li", function()
 	{
 		var Folderpath = $('#folderList_header_path').text();
-		if (Folderpath == '/')
-		{
-			Folderpath = '';
-		}
-		var path = Folderpath+'/'+$(this).text();
+		var path = Folderpath+$(this).text()+'/';
 		GetFileList('#folerviewlist', path, 0);
 	});
 

@@ -15,6 +15,7 @@
 		if (!defined('DEBUG'))
 		{
 			error_reporting(0);
+			log_errors(true);
 		}
 
 		
