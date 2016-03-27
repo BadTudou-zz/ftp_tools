@@ -92,9 +92,18 @@
 	float: left;
 	width: 130px;
 	height: 130px;
+	text-align: center;
 	background-image: url(../images/folder128.png);
 }
-
+/* .test
+{
+	display: inline-block;
+	width: 120px;
+	height: 100px;
+	display: block;
+	padding-top: 10px;
+	text-align: center;
+} */
 #folderList ul li a
 {
 	word-break:break-all;

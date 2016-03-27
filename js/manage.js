@@ -80,13 +80,13 @@ function GetFileIndex(rootpath)
 				
 				if (IsFileType(ext))
 				{
-					console.log(obj+' icon');
-					var $elem = $('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png"><a href="#">'+obj+'</a></li>');
+					//var $elem = $('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png); background-repeat: no-repeat;"><a href="#">'+obj+'</a></li>');
+					$('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png); background-repeat: no-repeat;background-size:80px 80px;background-position:center;"><a href="#">'+obj+'</a></li>');
 				
 				}
 				else
 				{
-					var $elem = $('#folerviewlist').append('<li ><a href="#">'+obj+'</a></li>');
+					$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');					
 				}
 
 				//$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
@@ -136,8 +136,8 @@ function GetFileList(object, file, node)
 				
 				if (IsFileType(ext))
 				{
-					console.log(obj+' icon');
-					var $elem = $('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png"><a href="#">'+obj+'</a></li>');
+					//var $elem = $('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png); background-repeat: no-repeat;"><a href="#">'+obj+'</a></li>');
+					$('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png); background-repeat: no-repeat;background-size:80px 80px;background-position:center;"><a href="#">'+obj+'</a></li>');
 				
 				}
 				else
@@ -388,7 +388,7 @@ $(document).ready(function()
 
 	$("#folerviewlist").on("mouseenter","li", function(event)
 	{
-		console.log($(this).text());
+		//console.log($(this).text());
 	});
 
 	$("#folerviewlist").on("contextmenu","li", function(event)
@@ -419,7 +419,9 @@ $(document).ready(function()
 		}
 
 		var pos = path.lastIndexOf('/');
-		var file = path.substr(0, pos);
+		var tmpfile = path.substr(0, pos);
+		var file = path.substr(0, tmpfile.lastIndexOf('/')+1);
+		console.log(file);
 		GetFileList('#folerviewlist', file, 0);
 	});
 
