@@ -365,7 +365,6 @@ function ShowContextMenu(object)
         		{
             		FileOperate('download', $(this).text(), 0);
         		}
-        
    			 },
    			  {
         		text: "删除",
@@ -384,7 +383,7 @@ function ShowContextMenu(object)
 					{
     					title: '新的文件名',
     					align: 'top',
-    					content: '<input id="filename" autofocus />',
+    					content: '<input id="filename" value="'+file+'"autofocus />',
     					okValue: '确定',
     					cancelValue: '取消',
     					ok: function ()
@@ -483,9 +482,31 @@ $(document).ready(function()
 	{
 		console.log('click the upload bottom');
 		$('#fileupload').click();
-		console.log($('#fileupload').val());
+		$('#folderList_opeate').show();
+		
 	});
 
+	//上传文件已经选择
+	$('#fileupload').change(function()
+	{
+		var afile = document.getElementById('fileupload');
+		for (i = 0; i < afile.files.length; i++) 
+		{
+			console.log(afile.files[i].name);
+			var filename = afile.files[i].name;
+			var filesize = (afile.files[i].size/1024).toFixed(2);
+			$('#folderList_opeate_upload_filelist_ul_name').append('<li><a href="#" title="'+filename+'">'+filename+'</a></li>');
+			$('#folderList_opeate_upload_filelist_ul_size').append('<li>'+filesize+' KB</li>');
+			var $button = $('#folderList_opeate_upload_filelist_ul_choose').append('<li><button type="submit" id="bn_upload_start" value="删除">删除</button></li>');
+			
+			$button.on("click","button", function(event)
+			{
+				console.log('clicked');
+				return false;
+			});
+		}
+
+	});
 	//绑定单击新建文件按钮事件
 	$('#folderList_header_toolbar_newfile').click(function(event)
 	{
@@ -552,7 +573,6 @@ $(document).ready(function()
 	$('#bn_upload_start').click(function(event)
 	{
 		console.log('start');
-		console.log($('#fileupload').val());
 		/*$.ajax(
 		{
 			url: 'web_manage.php',

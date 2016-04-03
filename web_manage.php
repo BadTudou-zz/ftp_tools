@@ -34,7 +34,6 @@
 
 				case 'GetFileList':
 					GetFileList($ftpManage, $_POST['file']);
-					//SendAnswer(0, $ftpManage->getHost().$ftpManage->getPort().$_POST['file'].$_SESSION['ftp_root']);
 					break;
 
 				case 'CreateFolder':
@@ -63,12 +62,9 @@
 					break;
 
 				default:
-					# code...
 					break;
 			}
 		}
-
-		
 
 		if (!isset($_SESSION))
 		{

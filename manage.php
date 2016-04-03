@@ -72,7 +72,14 @@
                 	<button type="submit">
                 	    删除
                 	</button>
-                	<div id="test"></div>
+                	<div id="folderList_opeate_upload_filelist">
+                		<ol id="folderList_opeate_upload_filelist_ul_name">
+                		</ol>
+                		<ol id="folderList_opeate_upload_filelist_ul_size">
+                		</ol>
+                		<ol id="folderList_opeate_upload_filelist_ul_choose">
+                		</ol>
+                	</div>
                 </div>
 			</div>
 			<div id="folderList_body">

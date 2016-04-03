@@ -188,10 +188,26 @@
 {
 	display: none;
 	margin-top: 10px;
-	height: 60px;
+	height: auto;
 	border:solid 1px;
 }
 
+#folderList_opeate_upload_filelist
+{
+	/* float: left; */
+}
+#folderList_opeate_upload_filelist ol
+{
+	float: left;
+	width: 28%;
+	line-height: 30px;
+	border:solid 1px;
+}
+
+#folderList_opeate_upload_filelist_ul_size,#folderList_opeate_upload_filelist_ul_choose
+{
+	list-style: none;
+}
 #folderList_body
 {
 	margin-top: 5px;
