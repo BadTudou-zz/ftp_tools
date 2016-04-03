@@ -26,7 +26,7 @@
 		 */
 		public function __destruct()
 		{
-			if ($this->getLoginState())
+			if ($this->getConnectState())
 			{
 				ftp_close($this->m_resource);
 			}
@@ -37,7 +37,7 @@
 		 */
 		public function connect()
 		{
-			$this->m_resource = @ftp_connect($this->m_host, $this->m_port);
+			$this->m_resource = @ftp_connect($this->m_host, $this->m_port, 30);
 			if ($this->m_resource)
 			{
 				$this->m_ConnectState = true;
@@ -51,8 +51,9 @@
 		{
 			try
 			{
-				if ( @ftp_login($this->m_resource, $this->m_user, $this->m_pwd) )
+				if (@ftp_login($this->m_resource, $this->m_user, $this->m_pwd) )
 				{
+					ftp_pasv($this->m_resource, true);
 					$this->m_LoginState = true;
 				}
 			}
@@ -74,7 +75,7 @@
 		/**
 		 * [登录FTP用户，成功则创建会话 Cookie 索引文件，否则向客户端输出错误信息]
 		 */
-		public function loginCheck()
+		function loginCheck()
 		{
 			$this->connect();
 			if ($this->getConnectState())
@@ -82,9 +83,8 @@
 				$this->login();
 				if ($this->getLoginState())
 				{
-					SendAnswer(0 , 'manage.php');
 					CreateSession($this);
-					$this->close();
+					SendAnswer(0 , 'manage.php');
 				}
 				else
 				{
@@ -153,7 +153,10 @@
 
 		public function getCurrentPath()
 		{
+			error_log(ftp_pwd($this->m_resource));
 			return ftp_pwd($this->m_resource);
+
+			//echo '<script>Alert('ess');</script>'
 		}
 
 		/**
@@ -183,6 +186,7 @@
 		 */
 		public function getFileSize($file)
 		{
+
 			return  ftp_size($this->m_resource, $file);
 		}
 
@@ -241,35 +245,6 @@
 			return ftp_delete($this->m_resource, $file);
 		}
 
-		/**
-		 * [将目录索引写入以"hostname"组成的json文件，host中的.以_代替]
-		 */
-		public function writeIndex()
-		{
-			$filename = 'index/'.str_replace('.','_',$this->m_host).$this->m_user.'.json';
-			$currentPath = $_SESSION['ftp_root'];
-			$size = strlen($currentPath);
-			fopen($filename,'w+');
-			$files = $this->getFileList($currentPath);
-			natsort($files);
-			$i = 0;
-			foreach ($files as $key => $value) 
-			{
-				$fronfile = substr($value, 0, $size);
-				if ( strcmp($fronfile,$currentPath) == 0)
-				{
-					$files[$key] = substr($value,$size+1);
-				}
-				if (strcmp($value,'.') == 0 || strcmp($value,'..') == 0)
-				{
-					array_splice($files, $i,1);
-					$i--;
-				}
-				# code...
-				$i++;
-			}
-			file_put_contents($filename, json_encode($files));
-		}
 
 		/**
 		 * [文件重命名]
@@ -289,6 +264,13 @@
 			return false;
 		}
 
+		/**
+		 * [下载文件]
+		 * @param  [string] $remotefile [远程文件]
+		 * @param  [string] $localfile  [本地文件]
+		 * @return [bool]         [true:成功; false:失败]
+
+		 */
 		public function downloadFile($remotefile, $localfile)
 		{
 			$ret = ftp_nb_get($this->m_resource, $localfile, $remotefile,  FTP_BINARY);

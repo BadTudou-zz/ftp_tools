@@ -14,8 +14,7 @@
 
 		/**
 		 * [创建用户会话，并将其信息写入cookie，做初始化工作]
-		 * @param  [type] &$ftpManage [description]
-		 * @return [type]             [description]
+		 * @param  [object] &$ftpManage [description]
 		 */
 		function CreateSession(&$ftpManage)
 		{
@@ -25,6 +24,10 @@
 			$vPWD  = $ftpManage->getPWD();
 			$vRoot = $ftpManage->getCurrentPath();
 
+			if (!isset($_SESSION))
+			{
+				session_start();
+			}
 			$_SESSION['ftp_login'] = true;
 			$_SESSION['ftp_host']  = $vHost;
 			$_SESSION['ftp_port']  = $vPort;
@@ -38,56 +41,40 @@
 			setcookie('ftp_cookie[1]', $vPort,  $timeOut);
 			setcookie('ftp_cookie[2]', $vUser,  $timeOut);
 			setcookie('ftp_cookie[3]', $vPWD,  $timeOut);
-			setcookie('ftp_cookie[3]', $vRoot,  $timeOut);
-
-			//读取FTP文件列表，并写入配置文件
-			$ftpManage->writeIndex();
+			setcookie('ftp_cookie[4]', $vRoot,  $timeOut);
 		}
 
 		/**
 		 * [连接并登录FTP服务器，并将文件列表写入索引文件]
-		 * @param [type] &$ftpManage [FTP对象]
+		 * @param [object] &$ftpManage [FTP对象]
 		 */
 		function Login(&$ftpManage)
 		{
 			$ftpManage->connect();
 			$ftpManage->login();
-			//$ftpManage->writeIndex();
 		}
 
-		function GetPWD(&$ftpManage)
+		/*function GetPWD(&$ftpManage)
 		{
 			Login($ftpManage);
-		}
-
-		/**
-		 * [向客户端输出文件索引]
-		 */
-		function GetFileIndex()
-		{
-			$filename = 'index/'.str_replace('.','_',$_SESSION['ftp_host'].$_SESSION['ftp_user']).'.json';
-			echo file_get_contents($filename);
-		}
+		}*/
 
 		/**
 		 * [向客户端输出特定路径下的文件列表]
-		 * @param [type] &$ftpManage [FTP对象]
-		 * @param [type] $path       [要获取的路径]
+		 * @param [object] &$ftpManage [FTP对象]
+		 * @param [string] $path       [要获取的路径]
 		 */
 		function GetFileList(&$ftpManage, $path)
 		{
-			
-	
 			Login($ftpManage);
-			$currentPath = $path;
-			$size = strlen($currentPath);
-			$files = $ftpManage->getFileList($currentPath);
+			$size = strlen($path);
+			$files = $ftpManage->getFileList($path);
 			natsort($files);
 			$i = 0;
-			foreach ($files as $key => $value) 
+			foreach ($files as $key => $value)
 			{
 				$fronfile = substr($value, 0, $size);
-				if ( strcmp($fronfile,$currentPath) == 0)
+				if ( strcmp($fronfile,$path) == 0)
 				{
 					$files[$key] = substr($value,$size);
 				}
@@ -96,7 +83,6 @@
 					array_splice($files, $i,1);
 					$i--;
 				}
-				# code...
 				$i++;
 			}
 
@@ -189,6 +175,13 @@
 			}
 		}
 
+		/**
+		 * [客户端处理下载文件]
+		 * @param [object] &$ftpManage [FTP对象]
+		 * @param [string] $path       [文件路径]
+		 * @param [string] $file       [文件名]
+		 * @param [string] $localfile  [本地临时文件名(含路径)]
+		 */
 		function DownloadFile(&$ftpManage, $path, $file, $localfile)
 		{
 			Login($ftpManage);
@@ -203,5 +196,9 @@
 			}
 		}
 
+		function UploadFile(&$ftpManage, $path)
+		{
+			 echo json_encode(print_r($_FILES["files"]));
+		}
 
 ?>

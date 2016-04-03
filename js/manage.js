@@ -7,10 +7,16 @@
 		Date	:	2016年3月18日13:54:05
 		Note	:	FTP文件管理的JQuery脚本
 */
-var groot;
+var gRootPath;
+
+/**
+ * [ext是否说支持显示图标的文件类型]
+ * @param {[string]} ext [扩展名]
+ * @return [bool]         [true:是; false:否]
+ */
 function IsFileType(ext)
 {
-	var data = new Array('txt','php', 'html');
+	var data = new Array('txt','php', 'html', 'exe');
 	for (var i =0; i <data.length ; i++)
 	{
 		if (data[i] == ext)
@@ -21,6 +27,107 @@ function IsFileType(ext)
 
 	return false;
 }
+
+/**
+ * [向服务器的web_manage.php发送POST请求，返回JSON]
+ * @param {[json]} data     [发送的请求]
+ */
+function SendRequest(data)
+{
+	$.ajax(
+	{
+		url: 'web_manage.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data:data
+	})
+
+	.done(function(json)
+	{
+		console.log('send requset'+json.msg);
+		return json.msg;
+	})
+
+	.error(function()
+	{
+		return false;
+	})
+
+}
+
+/**
+ * [移除指定节点的所有子节点]
+ * @param {[type]} node [节点]
+ */
+function RemoveAllChilds(node)
+{
+	while (node.children.length != 0)
+     {
+     	for (var i=0; i < node.children.length; i++)
+     	{
+    		$('#folderTree').tree('removeNode', node.children[i]);
+		}
+     }
+}
+
+/**
+ * [初始化文件树]
+ * @param {string} rootPath [根目录]
+ */
+function InitTree()
+{
+	var data = [{label:GetRootPath(), id:1}];
+	var $tree = $('#folderTree');
+	$tree.tree({data:data, autoOpen: true});
+	GetFileList('#folderTree', GetRootPath(), GetTreeRoot());
+}
+
+/**
+ * [获取当前路径]
+ * @return {string}  [当前路径]
+ */
+function GetCurrentPath()
+{
+	return $('#folderList_header_path').text();
+}
+
+/**
+ * [设置当前路径]
+ * @param {[string]} path [路径]
+ */
+function SetCurrentPath(path)
+{
+	$('#folderList_header_path').text(path);
+}
+
+
+/**
+ * [获取根路径]
+ * @return {string}  [根路径]
+ */
+function GetRootPath()
+{
+	return gRootPath;
+}
+
+/**
+ * [设置根路径]
+ * @param {[string]} rootPath [根路径]
+ */
+function SetRootPath(rootPath)
+{
+	gRootPath = rootPath;
+}
+
+function GetTreeRoot()
+{
+	var treeRoot = $('#folderTree').tree('getNodeById', 1);
+	return treeRoot;
+}
+
+/**
+ * [登陆]
+ */
 function Login()
 {
 	$.ajax({
@@ -29,80 +136,63 @@ function Login()
 		dataType: 'JSON',
 		data: {'action':'Login'}
 	})
+
 	.done(function(json)
 	{
 		if (json.state == 0)
 		{
-			groot = json.msg;
-			var sroot = groot;
-			if (groot != '/')
+			var tmpRootPath = json.msg;
+			if (tmpRootPath != '/')
 			{
-				sroot = groot+'/';
+				tmpRootPath += '/';
 			}
+			SetRootPath(tmpRootPath);
+			InitTree();
 			$("#header_userinfo_head").show();
 			$("#header_userinfo_name").html($.cookie('ftp_cookie[2]'));
-			$('#folderList_header_path').text(sroot);
 			$("#header_userinfo_state").text('当前在线').css({color:"#13E03C"});
-			GetFileIndex(groot);
-			
 		}
 		else
 		{
 			location.href = json.msg;
 		}
 	})
-	.error(function(info) 
-	{
-		console.log(info);
-		//location.href = "index.php";
-	});
 }
 
-function GetFileIndex(rootpath)
+
+/**
+ * [设置文件列表]
+ * @param {[json]} json [文件列表]
+ */
+function SetFileList(json)
 {
-	$.ajax({
-		url: 'web_manage.php',
-		type: 'POST',
-		dataType: 'JSON',
-		data: {'action':'GetFileIndex'}
-	})
-	.done(function(json)
+	$('#folerviewlist').empty();
+	$.each(json, function(idx, obj)
 	{
-		var data = [{label:rootpath, id:1}];
-		var $tree = $('#folderTree');
-		$tree.tree({data:data, autoOpen: true});
-		var node = $('#folderTree').tree('getNodeById', 1);
-		$('#folerviewlist').empty();
-		$.each(json, function(idx, obj) 
+		var pos = obj.lastIndexOf('.');
+		var ext = obj.substr(pos+1);
+		if (IsFileType(ext))
 		{
-				var pos = obj.lastIndexOf('.');
-				var ext = obj.substr(pos+1);
-				
-				if (IsFileType(ext))
-				{
-					//var $elem = $('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png); background-repeat: no-repeat;"><a href="#">'+obj+'</a></li>');
-					$('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png); background-repeat: no-repeat;background-size:80px 80px;background-position:center;"><a href="#">'+obj+'</a></li>');
-				
-				}
-				else
-				{
-					$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');					
-				}
-
-				//$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
-				$('#folderTree').tree('appendNode', obj, node);
-		});
+			$('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png); background-repeat: no-repeat;background-size:80px 80px;background-position:center;"><a href="#">'+obj+'</a></li>');
+		}
+		else
+		{
+			$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
+		}
 	})
-	.error(function(json) {
-		console.log('getFileIndexError:'+json);
-		/* Act on the event */
-	});
 }
 
+function SetFileTree(json, node)
+{
+	RemoveAllChilds(node);
+	$.each(json, function(idx, obj)
+	{
+		$('#folderTree').tree('appendNode', obj, node);
+	})
+}
 
 function GetFileList(object, file, node)
 {
-	console.log('function '+file);
 	$.ajax({
 		url: 'web_manage.php',
 		type: 'POST',
@@ -113,48 +203,25 @@ function GetFileList(object, file, node)
 	{
 		if ($.isEmptyObject(json))
 		{
-			
+			console.log('no data of file list');
+			if (file.lastIndexOf('.') == -1)
+			{
+				SetCurrentPath(file);
+				$('#folerviewlist').empty();
+			}
+		}
+		else
+		{
+			SetCurrentPath(file);
+			SetFileList(json);
 			if (object == '#folderTree')
 			{
-				var pos = file.lastIndexOf('/')+1;
-				$('#folerviewlist').empty();
-				$('#folderList_header_path').text(file.substr(0, pos-1));
-				var showFile = file.substr(pos, file.length);
-				$('#folerviewlist').append('<li><a href="#">'+showFile+'</a></li>');
+				SetFileTree(json, node);
 			}
-			
-			return ;
 		}
-
-		
-		$('#folderList_header_path').text(file);
-		$('#folerviewlist').empty();
-		$.each(json, function(idx, obj) 
-		{
-				var pos = obj.lastIndexOf('.');
-				var ext = obj.substr(pos+1);
-				
-				if (IsFileType(ext))
-				{
-					//var $elem = $('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png); background-repeat: no-repeat;"><a href="#">'+obj+'</a></li>');
-					$('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png); background-repeat: no-repeat;background-size:80px 80px;background-position:center;"><a href="#">'+obj+'</a></li>');
-				
-				}
-				else
-				{
-					$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');					
-				}
-
-				if (object == '#folderTree')
-				{
-					$('#folderTree').tree('appendNode', obj, node);
-				}
-		});
-
-		return json;
-		
 	})
-	.fail(function(json) {
+	.fail(function(json) 
+	{
 		console.log("get file list error"+json);
 	})
 }
@@ -162,7 +229,7 @@ function GetFileList(object, file, node)
 function ShowDig(object ,msg)
 {
 	var path = $('#folderList_header_path').text();
-	GetFileList('#folderTree', path, 0);
+	GetFileList('#folerviewlist', path, 0);
 	var d = dialog({
 				align: 'bottom',
 			    content: msg
@@ -182,16 +249,21 @@ function CreateFolder(path, folder)
 		dataType: 'JSON',
 		data: {'action':'CreateFolder','path':path, 'folder':folder}
 	})
-	.done(function(json) 
+	.done(function(json)
 	{
 		if (json.state == 0)
 		{
 			ShowDig('folderList_header_toolbar_newfolder','创建文件夹成功');
-			return true;
 		}
+		else
+		{
+			ShowDig('folderList_header_toolbar_newfolder','创建文件夹失败');
+		}
+		return true;
 	})
-	.fail(function(json) {
-		console.log("create folder error"+json);
+	.fail(function(json) 
+	{
+		ShowDig('folderList_header_toolbar_newfolder','创建文件夹失败');
 		return false;
 	})
 
@@ -206,17 +278,21 @@ function CreateFile(path, file)
 		dataType: 'JSON',
 		data: {'action':'CreateFile','path':path, 'file':file}
 	})
-	.done(function(json) 
+	.done(function(json)
 	{
 		if (json.state == 0)
 		{
 			ShowDig('folderList_header_toolbar_newfile','创建文件成功');
-			return true;
 		}
+		else
+		{
+			ShowDig('folderList_header_toolbar_newfile','创建文件失败');
+		}
+		return true;
 	})
-	.fail(function(json) 
+	.fail(function(json)
 	{
-		console.log("create file error"+json);
+		ShowDig('folderList_header_toolbar_newfile','创建文件失败');
 		return false;
 	})
 
@@ -250,7 +326,7 @@ function FileOperate(action, file, args)
 		dataType: 'JSON',
 		data: {'action':action,'path':path, 'file':file, 'newname':args}
 	})
-	.done(function(json) 
+	.done(function(json)
 	{
 		if (json.state == 0)
 		{
@@ -271,8 +347,6 @@ function FileOperate(action, file, args)
 	.always(function() {
 		console.log("complete");
 	});
-	
-	console.log(action);
 }
 
 function ShowContextMenu(object)
@@ -280,14 +354,14 @@ function ShowContextMenu(object)
 	var imageMenuData = [
     		 [{
         		text: "打开",
-        		func: function() 
+        		func: function()
         		{
             		FileOperate('open', $(this).text(), 0);
         		}
    			 },
     		 {
         		text: "下载",
-        		func: function() 
+        		func: function()
         		{
             		FileOperate('download', $(this).text(), 0);
         		}
@@ -295,14 +369,14 @@ function ShowContextMenu(object)
    			 },
    			  {
         		text: "删除",
-        		func: function() 
+        		func: function()
         		{
             		FileOperate('delete', $(this).text(), 0);
         		}
-    		}, 
+    		},
     		{
         		text: "重命名",
-        		func: function() 
+        		func: function()
         		{
         			var file = $(this).text();
         			var newname = null;
@@ -317,13 +391,11 @@ function ShowContextMenu(object)
     					{
         					newname = $('#filename').val();
 			        		console.log('file'+newname);
-			        		//FileOperate('rename', newname);
 			        		FileOperate('rename', file, newname);
         					return true;
     					}
     				});
 					d.show(document.getElementById('folderList_header'));
-        			
 				}
     		}],
 		];
@@ -343,10 +415,9 @@ $(document).ready(function()
         	var path = new Array();
         	var tmp = node;
 
-        	
-        	while(tmp.name != '') 
+        	while(tmp.name != '')
         	{
-        		if (tmp.name != '/')
+        		if (tmp.name != gRootPath)
         		{
         			path.push('/');
         		}
@@ -356,18 +427,7 @@ $(document).ready(function()
 
         	path.reverse();
         	var dirname=path.join('');
-        	console.log(node.children.length);
-        	while (node.children.length != 0)
-        	{
-        		for (var i=0; i < node.children.length; i++) 
-        	{
-    			var child = node.children[i];
-    			//console.log(child.name);
-    			$('#folderTree').tree('removeNode', child);
-
-			}
-        	}
-        	
+        	RemoveAllChilds(node);
         	console.log('tree '+dirname);
         	GetFileList('#folderTree', dirname, node);
         	}
@@ -400,14 +460,7 @@ $(document).ready(function()
 	//绑定单击主页按钮事件
 	$('#folderList_header_logo').click(function()
 	{
-		if (groot == '/')
-		{
-			GetFileList('#folerviewlist','/', 0);
-		}
-		else
-		{
-			GetFileList('#folerviewlist',groot+'/', 0);
-		}
+		GetFileList('#folerviewlist', GetRootPath(), 0);
 	});
 	//绑定单击返回上一级按钮事件
 	$('#folderList_header_back').click(function()
@@ -516,11 +569,8 @@ $(document).ready(function()
 		.always(function() {
 			console.log("complete");
 		});*/
-		
 	});
 
 	Login();
-	//GetFileList('#folderTree','/', 0);
-	
 });
 

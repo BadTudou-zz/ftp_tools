@@ -11,7 +11,7 @@
 
 	require_once('FTP.php');
 	use badtudou\FTP as FTP;
-	
+
 	define('DEBUG', true);
 	if (!defined('DEBUG'))
 	{
@@ -24,11 +24,16 @@
 		header("Location: http:index.php"); 
 		exit();
 	}
-	session_start();
+	if (!isset($_SESSION))
+	{
+		session_start();
+	}
+
 	$ftp_host = $_POST['ftp_host'];
-	$ftp_port = intval($_POST['ftp_port']);
+	$ftp_port =  (int)$_POST['ftp_port'];
 	$ftp_user = $_POST['ftp_user'];
 	$ftp_pwd  = $_POST['ftp_pwd'];
 	$ftpManage = new FTP($ftp_host, $ftp_port, $ftp_user, $ftp_pwd);
 	$ftpManage->loginCheck();
+	session_write_close();
 ?>

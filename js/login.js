@@ -29,7 +29,7 @@ $(document).ready(function()
 		{
 			if (el.value == "")
 			{
-				bInputState = false;
+				//bInputState = false;
 			}
 		});
 

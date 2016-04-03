@@ -15,7 +15,6 @@
 		if (!defined('DEBUG'))
 		{
 			error_reporting(0);
-			log_errors(true);
 		}
 
 		
@@ -29,15 +28,13 @@
 
 			switch ($action)
 			{
-				case 'GetFileIndex':
-					GetFileIndex();
-					break;
-
 				case 'Login':
 					SendAnswer(0, $_SESSION['ftp_root']);
 					break;
+
 				case 'GetFileList':
 					GetFileList($ftpManage, $_POST['file']);
+					//SendAnswer(0, $ftpManage->getHost().$ftpManage->getPort().$_POST['file'].$_SESSION['ftp_root']);
 					break;
 
 				case 'CreateFolder':
@@ -63,9 +60,7 @@
 				case 'download':
 					$filepath = 'tmp/'.str_replace('.','_',$ftpManage->getHost()).$ftpManage->getUser().$_POST['file'];
 					DownloadFile($ftpManage, $_POST['path'], $_POST['file'], $filepath);
-				/*case 'ChangeDir':
-					ChangeDir($ftpManage, $_POST['path']);
-					break;*/
+					break;
 
 				default:
 					# code...
@@ -73,16 +68,16 @@
 			}
 		}
 
-		function UploadFile(&$ftpManage, $path)
-		{
-			 echo json_encode(print_r($_FILES["files"]));
-		}
+		
 
-		session_start();
+		if (!isset($_SESSION))
+		{
+			session_start();
+		}
 		//登录状态检查
 		if ( !(isset($_SESSION['ftp_login']) && $_SESSION['ftp_login'] === true) )
 		{
-			sendAnswer(1, 'index.php');
+			SendAnswer(1, 'index.php');
 			exit();
 		}
 		$ftpManage = new FTP($_SESSION['ftp_host'], $_SESSION['ftp_port'], $_SESSION['ftp_user'], $_SESSION['ftp_pwd']);
