@@ -202,12 +202,25 @@
 	width: 28%;
 	line-height: 30px;
 	border:solid 1px;
-}
-
-#folderList_opeate_upload_filelist_ul_size,#folderList_opeate_upload_filelist_ul_choose
-{
 	list-style: none;
 }
+
+ol#folderList_opeate_upload_filelist_ul_name
+{
+	list-style: decimal;
+}
+
+ol#folderList_opeate_upload_filelist_ul_bn, ol#folderList_opeate_upload_filelist_ul_ck
+{
+	width: 5%;
+	margin-right: 5px;
+}
+
+ol#folderList_opeate_upload_filelist_ul_ck
+{
+	padding-left: 5px;
+}
+
 #folderList_body
 {
 	margin-top: 5px;

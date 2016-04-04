@@ -27,6 +27,7 @@
 	<script type="text/javascript" src="js/jquery-smartMenu-min.js"></script>
 	<!-- <script type="text/javascript" src="js/jquery.contextMenu.js"></script> -->
 	<script type="text/javascript" src="js/tree.jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.form.min.js"></script>
 	<script type="text/javascript" src="js/manage.js"></script>
 	<title>FTP Tool Manage</title>
 </head>
@@ -62,24 +63,27 @@
 			</div>
 			<div id="folderList_opeate">
 				<div id="folderList_opeate_upload">
-					<input id="fileupload" type="file" name="files[]" data-url="server/php/" hidden multiple/form-data>
-					<button type="submit" id="bn_upload_start" value="开始">
-                	    开始
-                	</button>
-                	<button type="submit">
+				<form id="form_uploadfile" action="upload.php" method="POST" enctype="multipart/form-data">
+					<input id="fileupload" type="file" name="files[]"  hidden multiple/form-data>
+					<input type="submit" id="bn_upload_start" value="开始" />
+					<button type="button" id="bn_upload_cancel">
                 	    取消
                 	</button>
-                	<button type="submit">
+                	<button type="button" id="bn_upload_delete">
                 	    删除
                 	</button>
+				</form>
                 	<div id="folderList_opeate_upload_filelist">
                 		<ol id="folderList_opeate_upload_filelist_ul_name">
                 		</ol>
                 		<ol id="folderList_opeate_upload_filelist_ul_size">
                 		</ol>
-                		<ol id="folderList_opeate_upload_filelist_ul_choose">
+                		<ol id="folderList_opeate_upload_filelist_ul_bn">
+                		</ol>
+                		<ol id="folderList_opeate_upload_filelist_ul_ck">
                 		</ol>
                 	</div>
+                
                 </div>
 			</div>
 			<div id="folderList_body">

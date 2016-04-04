@@ -125,6 +125,25 @@ function GetTreeRoot()
 	return treeRoot;
 }
 
+function AddFileItem(filename, filesize)
+{
+	$('#folderList_opeate_upload_filelist_ul_name').append('<li><a href="#" title="'+filename+'">'+filename+'</a></li>');
+	$('#folderList_opeate_upload_filelist_ul_size').append('<li>'+filesize+' KB</li>');
+	$('#folderList_opeate_upload_filelist_ul_bn').append('<li><button type="submit">删除</button></li>');
+	$('#folderList_opeate_upload_filelist_ul_ck').append('<li><input type="checkbox"/></li>');
+
+}
+
+function RemoveFileItem(index)
+{
+	$("#folderList_opeate_upload_filelist_ul_name li:eq("+index+")").remove();
+	$("#folderList_opeate_upload_filelist_ul_size li:eq("+index+")").remove();
+	$("#folderList_opeate_upload_filelist_ul_bn li:eq("+index+")").remove();
+	$("#folderList_opeate_upload_filelist_ul_ck li:eq("+index+")").remove();
+	var afile = document.getElementById('fileupload');
+	console.log('delete'+afile.files[index].name);
+}
+
 /**
  * [登陆]
  */
@@ -495,17 +514,33 @@ $(document).ready(function()
 			console.log(afile.files[i].name);
 			var filename = afile.files[i].name;
 			var filesize = (afile.files[i].size/1024).toFixed(2);
-			$('#folderList_opeate_upload_filelist_ul_name').append('<li><a href="#" title="'+filename+'">'+filename+'</a></li>');
-			$('#folderList_opeate_upload_filelist_ul_size').append('<li>'+filesize+' KB</li>');
-			var $button = $('#folderList_opeate_upload_filelist_ul_choose').append('<li><button type="submit" id="bn_upload_start" value="删除">删除</button></li>');
-			
-			$button.on("click","button", function(event)
-			{
-				console.log('clicked');
-				return false;
-			});
-		}
+			AddFileItem(filename, filesize);
+        }
+	});
 
+	//绑定单击列表项的删除按钮
+	$('#folderList_opeate_upload_filelist_ul_bn').on("click","li", function(event)
+	{
+		var tar = event.target;
+		var index = $(this).index();
+		console.log('current'+index);
+		if (tar.nodeName == "BUTTON")
+		{
+			RemoveFileItem(index);
+		}
+	});
+
+	//绑定单击删除按钮
+	$('#bn_upload_delete').click(function(event)
+	{
+		var deleteFiles = $("ol#folderList_opeate_upload_filelist_ul_ck li input[type=checkbox]");
+		deleteFiles.each(function(index)
+		{
+			if ($(this).is(':checked'))
+			{
+				RemoveFileItem(index);
+			}
+		});
 	});
 	//绑定单击新建文件按钮事件
 	$('#folderList_header_toolbar_newfile').click(function(event)
@@ -549,47 +584,35 @@ $(document).ready(function()
 			d.show(document.getElementById('folderList_header_toolbar_newfolder'));
 	});
 
-	/*//文件上传控件处理函数
-	$('#fileupload').fileupload(
+	//提交文件列表表单
+	$("#form_uploadfile").submit(function()
 	{
-    	drop: function (e, data)
-    	{
-        	$.each(data.files, function (index, file)
-        	{
-            	alert('Dropped file: ' + file.name);
-        	});
-    	},
-    	change: function (e, data)
-    	{
-        	$.each(data.files, function (index, file)
-        	{
-            	alert('Selected file: ' + file.name);
-        	});
-        	$("#folderList_opeate").show();
-    	}
-	});*/
-
-	//上传开始
-	$('#bn_upload_start').click(function(event)
-	{
-		console.log('start');
-		/*$.ajax(
+		$(this).ajaxSubmit(function(msg)
 		{
-			url: 'web_manage.php',
-			type: 'POST',
-			dataType: 'JSON',
-			data: {'action':'UploadFile','path':path, 'files':#fileupload}
-		})
-		.done(function() {
-			console.log("success");
-		})
-		.fail(function() {
-			console.log("error");
-		})
-		.always(function() {
-			console.log("complete");
-		});*/
+			if (msg == 'OK')
+			{
+				console.log('上传临时文件成功');
+				$.ajax(
+				{
+					url: 'web_manage.php',
+					type: 'POST',
+					dataType: 'JSON',
+					data: {'action':'UploadFile','path':GetCurrentPath()}
+				})
+				.done(function(json)
+				{
+					if (json.state == 0)
+					{
+						console.log('上传到ftp成功'+json.msg);
+						GetFileList('#folerviewlist', GetCurrentPath(), 0);
+						ShowDig('folderList_header_toolbar_upload','上传文件成功');
+					}
+				})
+			}
+		});
+		return false;
 	});
+
 
 	Login();
 });

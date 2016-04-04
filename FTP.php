@@ -285,6 +285,24 @@
 
 			return true;
 		}
+
+		public function uploadFile($remotefile, $localfile)
+		{
+			$ret = ftp_nb_put($this->m_resource, $remotefile, $localfile, FTP_BINARY);
+			while ($ret == FTP_MOREDATA) 
+			{
+			   $ret = ftp_nb_continue($this->m_resource);
+			}
+			if ($ret != FTP_FINISHED) 
+			{
+   				return false;
+   			}
+   			else
+   			{
+   				return true;
+   			}
+
+		}
 	}
 
 

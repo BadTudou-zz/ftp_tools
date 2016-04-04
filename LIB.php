@@ -54,11 +54,6 @@
 			$ftpManage->login();
 		}
 
-		/*function GetPWD(&$ftpManage)
-		{
-			Login($ftpManage);
-		}*/
-
 		/**
 		 * [向客户端输出特定路径下的文件列表]
 		 * @param [object] &$ftpManage [FTP对象]
@@ -198,7 +193,25 @@
 
 		function UploadFile(&$ftpManage, $path)
 		{
-			 echo json_encode(print_r($_FILES["files"]));
+			Login($ftpManage);
+			$len = strlen(session_id());
+			$rDir = opendir('upload/');
+			error_log('sessionid leng'.$len);
+			while (($sFile = readdir($rDir)) != null)
+			{
+				$sessionId = substr($sFile, 0, $len);
+				if (strcmp($sessionId, session_id()) == 0)
+				{
+					$fileName = substr($sFile,$len);
+					if ($ftpManage->uploadFile($path.$fileName, dirname(__FILE__).'/upload/'.$sFile))
+					{
+						unlink('upload/'.$sFile);
+					}
+				}
+			}
+			SendAnswer(0, '上传成功');
+			//Login($ftpManage);
+			//$ftpManage->uploadFile()
 		}
 
 ?>
