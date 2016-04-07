@@ -151,12 +151,13 @@
 			return $this->m_pwd;
 		}
 
+		/**
+		 * [获取当前FTP路径]
+		 * @return [string] [当前FTP路径]
+		 */
 		public function getCurrentPath()
 		{
-			error_log(ftp_pwd($this->m_resource));
 			return ftp_pwd($this->m_resource);
-
-			//echo '<script>Alert('ess');</script>'
 		}
 
 		/**
@@ -269,7 +270,6 @@
 		 * @param  [string] $remotefile [远程文件]
 		 * @param  [string] $localfile  [本地文件]
 		 * @return [bool]         [true:成功; false:失败]
-
 		 */
 		public function downloadFile($remotefile, $localfile)
 		{
@@ -286,6 +286,12 @@
 			return true;
 		}
 
+		/**
+		 * [上传文件]
+		 * @param  [string] $remotefile [远程文件]
+		 * @param  [string] $localfile  [本地文件]
+		 * @return [bool]         [true:成功; false:失败]
+		 */
 		public function uploadFile($remotefile, $localfile)
 		{
 			$ret = ftp_nb_put($this->m_resource, $remotefile, $localfile, FTP_BINARY);

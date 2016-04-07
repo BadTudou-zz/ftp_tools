@@ -182,7 +182,7 @@
 			Login($ftpManage);
 			if ($ftpManage->downloadFile($path.$file, $localfile))
 			{
-				$fileurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['SCRIPT_NAME']).'/download.php?file='.$file.'&downloadfile='.$localfile;
+				$fileurl = 'download.php?file='.$file.'&downloadfile='.$localfile;
 				SendAnswer(0, $fileurl);
 			}
 			else
@@ -191,6 +191,11 @@
 			}
 		}
 
+		/**
+		 * [上传文件至FTP服务器]
+		 * @param [object] &$ftpManage [FTP对象]
+		 * @param [string] $path       [本地文件路径]
+		 */
 		function UploadFile(&$ftpManage, $path)
 		{
 			Login($ftpManage);
@@ -210,8 +215,6 @@
 				}
 			}
 			SendAnswer(0, '上传成功');
-			//Login($ftpManage);
-			//$ftpManage->uploadFile()
 		}
 
 ?>

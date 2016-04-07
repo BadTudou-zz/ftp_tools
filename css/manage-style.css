@@ -189,19 +189,30 @@
 	display: none;
 	margin-top: 10px;
 	height: auto;
-	border:solid 1px;
 }
-
-#folderList_opeate_upload_filelist
+#form_uploadfile button
 {
-	/* float: left; */
+	width: 90px;
+	height: 30px;
+	color: #F27390;
+	background-color: #3EB5FD;
+}
+#folderList_opeate_upload_filelist button
+{
+	color: #FFF;
+	background-color: #F27390;
+}
+#folderList_opeate_upload
+{
+	height: auto;;
+	border:solid 1px;
+	border-color: #269793;
 }
 #folderList_opeate_upload_filelist ol
 {
 	float: left;
 	width: 28%;
 	line-height: 30px;
-	border:solid 1px;
 	list-style: none;
 }
 

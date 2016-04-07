@@ -13,19 +13,12 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="css/jqtree/jqtree.css">
 	<link rel="stylesheet" type="text/css" href="css/manage-style.css">
-	<!-- <link rel="stylesheet" type="text/css" href="css/jquery.fileupload.css"> -->
 	<link rel="stylesheet" type="text/css" href="css/ui-dialog.css">
 	<link rel="stylesheet" type="text/css" href="css/smartMenu.css">
 	<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
 	<script type="text/javascript" src="js/jquery.cookie.js"></script>
-	<!-- <script type="text/javascript" src="js/vendor/jquery.ui.widget.js"></script> -->
-	<!-- <script type="text/javascript" src="js/jquery.iframe-transport.js"></script> -->
-<!-- 	<script type="text/javascript" src="js/jquery.fileupload.js"></script>
-	 -->	<!-- <script type="text/javascript" src="js/jquery.fileupload-ui.js"></script> -->
-	<!-- <script type="text/javascript" src="js/jquery.fileupload-process.js"></script> -->
 	<script type="text/javascript" src="js/dialog-min.js"></script>
 	<script type="text/javascript" src="js/jquery-smartMenu-min.js"></script>
-	<!-- <script type="text/javascript" src="js/jquery.contextMenu.js"></script> -->
 	<script type="text/javascript" src="js/tree.jquery.js"></script>
 	<script type="text/javascript" src="js/jquery.form.min.js"></script>
 	<script type="text/javascript" src="js/manage.js"></script>
@@ -63,16 +56,13 @@
 			</div>
 			<div id="folderList_opeate">
 				<div id="folderList_opeate_upload">
-				<form id="form_uploadfile" action="upload.php" method="POST" enctype="multipart/form-data">
-					<input id="fileupload" type="file" name="files[]"  hidden multiple/form-data>
-					<input type="submit" id="bn_upload_start" value="开始" />
-					<button type="button" id="bn_upload_cancel">
-                	    取消
-                	</button>
-                	<button type="button" id="bn_upload_delete">
-                	    删除
-                	</button>
-				</form>
+					<form id="form_uploadfile" action="upload.php" method="POST" enctype="multipart/form-data">
+						<input id="fileupload" type="file" name="files[]"  hidden multiple/form-data>
+						<button type="submit" id="bn_upload_start">开始</button>
+						<button type="button" id="bn_upload_add">添加</button>
+                		<button type="button" id="bn_upload_delete">删除</button>
+						<button type="button" id="bn_upload_cancel">取消</button>
+					</form>
                 	<div id="folderList_opeate_upload_filelist">
                 		<ol id="folderList_opeate_upload_filelist_ul_name">
                 		</ol>

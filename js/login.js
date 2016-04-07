@@ -7,6 +7,31 @@
 	Date	:	2016年3月18日13:54:05
 	Note	:	登录FTP服务器
 */
+
+function CheckInput()
+{
+	var bInputState = true;
+	$("input:text").each(function(index, el) 
+	{
+		if (el.value == "")
+		{
+			bInputState = false;
+		}
+	});
+
+	if (bInputState)
+	{
+		$("#submit_button").removeAttr('disabled');
+		$("#submit_button").removeClass("submit_buttonError");
+		$("#submit_button").addClass("submit_buttonOk");
+	}
+	else
+	{
+		$("#submit_button").addClass('submit_buttonError');
+		$("#submit_button").attr('disabled',"true");
+	}
+}
+
 $(document).ready(function() 
 {
 	$("input").focus(function(event) 
@@ -21,31 +46,12 @@ $(document).ready(function()
 	$('#ftp_user').val($.cookie('ftp_cookie[2]'));
 	$('#ftp_pwd').val($.cookie('ftp_cookie[3]'));
 
-	//检测所有输入项是否有值，以决定是否启用提交按钮
-	$("input").hover(function(event) 
+	//检测必填输入项是否有值，以决定是否启用提交按钮
+	$("input").change(function()
 	{
-		var bInputState = true;
-		$("input").each(function(index, el) 
-		{
-			if (el.value == "")
-			{
-				//bInputState = false;
-			}
-		});
-
-		if (bInputState)
-		{
-			$("#submit_button").removeAttr('disabled');
-			$("#submit_button").removeClass("submit_buttonError");
-			$("#submit_button").addClass("submit_buttonOk");
-		}
-		else
-		{
-			$("#submit_button").addClass('submit_buttonError');
-			$("#submit_button").attr('disabled',"true");
-		}
+		CheckInput();
 	});
-
+	
 	//提交表单，登录FTP，成功则跳转至服务器返回的页面，失败则显示出错信息
 	$("#submit_button").click(function(event) 
 	{
@@ -71,7 +77,7 @@ $(document).ready(function()
 		})
 		.error(function(json) 
 		{
-			console.log('somethins was wrong when login'+json);
+			$("#hintText").text('错误：服务器发生未知错误').addClass('hintError');
 		});
 		return false;
 	});

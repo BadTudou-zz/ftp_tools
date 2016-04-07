@@ -7,16 +7,18 @@
 		Date	:	2016年3月18日13:54:05
 		Note	:	FTP文件管理的JQuery脚本
 */
+
+//根目录的路径
 var gRootPath;
 
 /**
- * [ext是否说支持显示图标的文件类型]
+ * [ext是否支持显示图标的文件类型]
  * @param {[string]} ext [扩展名]
  * @return [bool]         [true:是; false:否]
  */
 function IsFileType(ext)
 {
-	var data = new Array('txt','php', 'html', 'exe');
+	var data = new Array('txt','php', 'html', 'exe', 'zip', 'png', 'jpeg');
 	for (var i =0; i <data.length ; i++)
 	{
 		if (data[i] == ext)
@@ -24,35 +26,7 @@ function IsFileType(ext)
 			return true;
 		}
 	}
-
 	return false;
-}
-
-/**
- * [向服务器的web_manage.php发送POST请求，返回JSON]
- * @param {[json]} data     [发送的请求]
- */
-function SendRequest(data)
-{
-	$.ajax(
-	{
-		url: 'web_manage.php',
-		type: 'POST',
-		dataType: 'JSON',
-		data:data
-	})
-
-	.done(function(json)
-	{
-		console.log('send requset'+json.msg);
-		return json.msg;
-	})
-
-	.error(function()
-	{
-		return false;
-	})
-
 }
 
 /**
@@ -119,29 +93,52 @@ function SetRootPath(rootPath)
 	gRootPath = rootPath;
 }
 
+/**
+ * [获取根路径]
+ * @param {[string]} rootPath [根路径]
+ */
 function GetTreeRoot()
 {
 	var treeRoot = $('#folderTree').tree('getNodeById', 1);
 	return treeRoot;
 }
 
+/**
+ * [上传文件列表添加列表项]
+ * @param {[string]} filename [文件名]
+ * @param {[string]} filesize [文件大小kb]
+ */
 function AddFileItem(filename, filesize)
 {
 	$('#folderList_opeate_upload_filelist_ul_name').append('<li><a href="#" title="'+filename+'">'+filename+'</a></li>');
 	$('#folderList_opeate_upload_filelist_ul_size').append('<li>'+filesize+' KB</li>');
 	$('#folderList_opeate_upload_filelist_ul_bn').append('<li><button type="submit">删除</button></li>');
 	$('#folderList_opeate_upload_filelist_ul_ck').append('<li><input type="checkbox"/></li>');
-
 }
 
+/**
+ * [上传文件列表移除列表项]
+ * @param {[int]} index [列表项的下标]
+ */
 function RemoveFileItem(index)
 {
 	$("#folderList_opeate_upload_filelist_ul_name li:eq("+index+")").remove();
 	$("#folderList_opeate_upload_filelist_ul_size li:eq("+index+")").remove();
 	$("#folderList_opeate_upload_filelist_ul_bn li:eq("+index+")").remove();
 	$("#folderList_opeate_upload_filelist_ul_ck li:eq("+index+")").remove();
-	var afile = document.getElementById('fileupload');
-	console.log('delete'+afile.files[index].name);
+	/*var afile = document.getElementById('fileupload');
+	console.log('delete'+afile.files[index].name);*/
+}
+
+/**
+ * [移除上传文件列表所有列表项]
+ */
+function RemoveAllFileItem()
+{
+	$('#folderList_opeate_upload_filelist_ul_name').empty();
+	$('#folderList_opeate_upload_filelist_ul_size').empty();
+	$('#folderList_opeate_upload_filelist_ul_bn').empty();
+	$('#folderList_opeate_upload_filelist_ul_ck').empty();
 }
 
 /**
@@ -201,6 +198,11 @@ function SetFileList(json)
 	})
 }
 
+/**
+ * [设置文件树的结点]
+ * @param {[json]} json [文件列表]
+ * @param {[node]} node [结点]
+ */
 function SetFileTree(json, node)
 {
 	RemoveAllChilds(node);
@@ -210,6 +212,12 @@ function SetFileTree(json, node)
 	})
 }
 
+/**
+ * [获取文件列表]
+ * @param {[控件]} object [文件树结点/列表]
+ * @param {[string]} file   [路径]
+ * @param {[node]} node   [文件树结点]
+ */
 function GetFileList(object, file, node)
 {
 	$.ajax({
@@ -222,7 +230,6 @@ function GetFileList(object, file, node)
 	{
 		if ($.isEmptyObject(json))
 		{
-			console.log('no data of file list');
 			if (file.lastIndexOf('.') == -1)
 			{
 				SetCurrentPath(file);
@@ -241,25 +248,37 @@ function GetFileList(object, file, node)
 	})
 	.fail(function(json) 
 	{
-		console.log("get file list error"+json);
+		ShowDig('folderTree', '获取文件列表失败');
 	})
 }
 
+
+/**
+ * [显示对话框]
+ * @param {[对象]} object [关联的对象]
+ * @param {[string]} msg  [消息内容]
+ */
 function ShowDig(object ,msg)
 {
 	var path = $('#folderList_header_path').text();
 	GetFileList('#folerviewlist', path, 0);
-	var d = dialog({
-				align: 'bottom',
-			    content: msg
-				});
+	var d = dialog(
+	{
+		align: 'bottom',
+		content: msg
+	});
 	d.show(document.getElementById(object));
 	setTimeout(function () 
 	{
-    	d.close().remove();
+     d.close().remove();
 	}, 2000);
-
 }
+
+/**
+ * [创建文件夹]
+ * @param {[string]} path   [路径]
+ * @param {[string]} folder [文件夹名]
+ */
 function CreateFolder(path, folder)
 {
 	$.ajax({
@@ -278,16 +297,19 @@ function CreateFolder(path, folder)
 		{
 			ShowDig('folderList_header_toolbar_newfolder','创建文件夹失败');
 		}
-		return true;
 	})
 	.fail(function(json) 
 	{
-		ShowDig('folderList_header_toolbar_newfolder','创建文件夹失败');
-		return false;
+		ShowDig('folderList_header_toolbar_newfolder','创建文件夹时服务端发生失败');
 	})
 
 }
 
+/**
+ * [创建文件]
+ * @param {[string]} path   [路径]
+ * @param {[string]} file [文件夹]
+ */
 function CreateFile(path, file)
 {
 	$.ajax(
@@ -307,39 +329,25 @@ function CreateFile(path, file)
 		{
 			ShowDig('folderList_header_toolbar_newfile','创建文件失败');
 		}
-		return true;
 	})
 	.fail(function(json)
 	{
-		ShowDig('folderList_header_toolbar_newfile','创建文件失败');
-		return false;
+		ShowDig('folderList_header_toolbar_newfile','创建文件时服务端发生失败');
 	})
 
 }
 
+/**
+ * [文件操作]
+ * @param {[string]} action [操作行为]
+ * @param {[string]} file   [文件路径]
+ * @param {[string]} args   [参数]
+ */
 function FileOperate(action, file, args)
 {
 	var path = $('#folderList_header_path').text();
-	switch (action)
+	$.ajax(
 	{
-		case 'open':
-			console.log(path+file);
-			return;
-			break;
-
-		case 'download':
-			console.log('download file'+path+file);
-			break;
-
-		case 'delete':
-			console.log(path+file);
-			break;
-
-		case 'rename':
-			console.log(path+file+'new file name'+args);
-			break;
-	}
-	$.ajax({
 		url: 'web_manage.php',
 		type: 'POST',
 		dataType: 'JSON',
@@ -356,18 +364,18 @@ function FileOperate(action, file, args)
 			}
 			ShowDig('folderList_header', json.msg);
 			GetFileList('#folerviewlist', path, 0);
-
-			console.log(json.msg);
 		}
 	})
-	.fail(function(json) {
-		console.log("error"+json);
+	.fail(function(json) 
+	{
+		ShowDig('folderList_header', '文件操作失败');
 	})
-	.always(function() {
-		console.log("complete");
-	});
 }
 
+/**
+ * [显示上下文菜单]
+ * @param {[object]} object [目标]
+ */
 function ShowContextMenu(object)
 {
 	var imageMenuData = [
@@ -408,7 +416,6 @@ function ShowContextMenu(object)
     					ok: function ()
     					{
         					newname = $('#filename').val();
-			        		console.log('file'+newname);
 			        		FileOperate('rename', file, newname);
         					return true;
     					}
@@ -446,9 +453,8 @@ $(document).ready(function()
         	path.reverse();
         	var dirname=path.join('');
         	RemoveAllChilds(node);
-        	console.log('tree '+dirname);
         	GetFileList('#folderTree', dirname, node);
-        	}
+        }
 	);
 
 	//绑定单击文件预览列表li事件
@@ -480,11 +486,12 @@ $(document).ready(function()
 	{
 		GetFileList('#folerviewlist', GetRootPath(), 0);
 	});
+
 	//绑定单击返回上一级按钮事件
 	$('#folderList_header_back').click(function()
 	{
 		var path = $('#folderList_header_path').text();
-		if (path == groot)
+		if (path == GetRootPath())
 		{
 			return ;
 		}
@@ -499,23 +506,36 @@ $(document).ready(function()
 	//绑定单击文件上传按钮事件
 	$('#folderList_header_toolbar_upload').click(function(event)
 	{
-		console.log('click the upload bottom');
 		$('#fileupload').click();
-		$('#folderList_opeate').show();
-		
 	});
+
 
 	//上传文件已经选择
 	$('#fileupload').change(function()
 	{
+		$('#folderList_opeate').show();
 		var afile = document.getElementById('fileupload');
 		for (i = 0; i < afile.files.length; i++) 
 		{
-			console.log(afile.files[i].name);
 			var filename = afile.files[i].name;
 			var filesize = (afile.files[i].size/1024).toFixed(2);
 			AddFileItem(filename, filesize);
         }
+	});
+
+	//绑定单击文件上传按钮事件
+	$('#bn_upload_add').click(function(event)
+	{
+		$('#fileupload').click();
+		$('#folderList_opeate').show();
+	});
+
+	//绑定单击列表项的取消按钮
+	$('#bn_upload_cancel').click(function()
+	{
+		RemoveAllFileItem();
+		$('#fileupload').attr("value","");
+		$('#folderList_opeate').hide();
 	});
 
 	//绑定单击列表项的删除按钮
@@ -523,7 +543,6 @@ $(document).ready(function()
 	{
 		var tar = event.target;
 		var index = $(this).index();
-		console.log('current'+index);
 		if (tar.nodeName == "BUTTON")
 		{
 			RemoveFileItem(index);
@@ -542,6 +561,7 @@ $(document).ready(function()
 			}
 		});
 	});
+
 	//绑定单击新建文件按钮事件
 	$('#folderList_header_toolbar_newfile').click(function(event)
 	{
@@ -591,7 +611,8 @@ $(document).ready(function()
 		{
 			if (msg == 'OK')
 			{
-				console.log('上传临时文件成功');
+				$('#folderList_opeate').hide();
+				RemoveAllFileItem();
 				$.ajax(
 				{
 					url: 'web_manage.php',
@@ -603,7 +624,6 @@ $(document).ready(function()
 				{
 					if (json.state == 0)
 					{
-						console.log('上传到ftp成功'+json.msg);
 						GetFileList('#folerviewlist', GetCurrentPath(), 0);
 						ShowDig('folderList_header_toolbar_upload','上传文件成功');
 					}
@@ -613,7 +633,5 @@ $(document).ready(function()
 		return false;
 	});
 
-
 	Login();
 });
-
