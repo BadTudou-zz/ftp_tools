@@ -11,6 +11,8 @@
 //根目录的路径
 var gRootPath;
 
+gXhr = new XMLHttpRequest();
+var gFd = new FormData();
 /**
  * [ext是否支持显示图标的文件类型]
  * @param {[string]} ext [扩展名]
@@ -141,6 +143,28 @@ function RemoveAllFileItem()
 	$('#folderList_opeate_upload_filelist_ul_ck').empty();
 }
 
+function PreventBrowserDrop()
+{
+   $(document).on(
+   { 
+        dragleave:function(e)
+        {    //拖离 
+            e.preventDefault(); 
+        }, 
+        drop:function(e)
+        {  //拖后放 
+            e.preventDefault(); 
+        }, 
+        dragenter:function(e)
+        {    //拖进 
+            e.preventDefault(); 
+        }, 
+        dragover:function(e)
+        {    //拖来拖去 
+            e.preventDefault(); 
+        } 
+    }); 
+}
 /**
  * [登陆]
  */
@@ -337,6 +361,29 @@ function CreateFile(path, file)
 
 }
 
+function UploadFile(msg)
+{
+	if (msg == 'OK')
+	{
+		RemoveAllFileItem();
+		$.ajax(
+		{
+			url: 'web_manage.php',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {'action':'UploadFile','path':GetCurrentPath()}
+		})
+		.done(function(json)
+		{
+			if (json.state == 0)
+			{
+				GetFileList('#folerviewlist', GetCurrentPath(), 0);
+				ShowDig('folderList_header_toolbar_upload','上传文件成功');
+				$('#folderList_opeate').hide();
+			}
+		})
+	}
+}
 /**
  * [文件操作]
  * @param {[string]} action [操作行为]
@@ -506,7 +553,8 @@ $(document).ready(function()
 	//绑定单击文件上传按钮事件
 	$('#folderList_header_toolbar_upload').click(function(event)
 	{
-		$('#fileupload').click();
+		//$('#fileupload').click();
+		$('#folderList_opeate').show();
 	});
 
 
@@ -604,34 +652,46 @@ $(document).ready(function()
 			d.show(document.getElementById('folderList_header_toolbar_newfolder'));
 	});
 
+	$("#bn_upload_start").click(function()
+	{
+		gXhr.send(gFd);
+		
+	});
 	//提交文件列表表单
 	$("#form_uploadfile").submit(function()
 	{
-		$(this).ajaxSubmit(function(msg)
-		{
-			if (msg == 'OK')
-			{
-				$('#folderList_opeate').hide();
-				RemoveAllFileItem();
-				$.ajax(
-				{
-					url: 'web_manage.php',
-					type: 'POST',
-					dataType: 'JSON',
-					data: {'action':'UploadFile','path':GetCurrentPath()}
-				})
-				.done(function(json)
-				{
-					if (json.state == 0)
-					{
-						GetFileList('#folerviewlist', GetCurrentPath(), 0);
-						ShowDig('folderList_header_toolbar_upload','上传文件成功');
-					}
-				})
-			}
-		});
+		
 		return false;
 	});
 
+	var drop_area = document.getElementById('drop_area');
+	drop_area.addEventListener("drop", function(event)
+	{
+		event.preventDefault();
+		
+		gXhr.open("post", "upload.php", true);
+		gXhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+		gXhr.onreadystatechange = function(state)
+		{
+			if (gXhr.readyState == 4)
+			{
+				console.log(gXhr.readyState+'  '+gXhr.responseText);	
+				UploadFile(gXhr.responseText);		
+			}
+		}
+		var files = event.dataTransfer.files;
+		for (var i = 0; i < files.length; i++) 
+		{
+    		var file = files[i];
+    		gFd.append('files['+i+']', file);
+    		var filename = files[i].name;
+			var filesize = (files[i].size/1024).toFixed(2);
+			AddFileItem(filename, filesize);
+    		console.log(file.name);
+		}
+		console.log("test");
+	}, false);
+
+	PreventBrowserDrop();
 	Login();
 });

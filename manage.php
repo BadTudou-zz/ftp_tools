@@ -56,6 +56,7 @@
 			</div>
 			<div id="folderList_opeate">
 				<div id="folderList_opeate_upload">
+					<div id="drop_area">将文件拖拽到此区域</div>
 					<form id="form_uploadfile" action="upload.php" method="POST" enctype="multipart/form-data">
 						<input id="fileupload" type="file" name="files[]"  hidden multiple/form-data>
 						<button type="submit" id="bn_upload_start">开始</button>

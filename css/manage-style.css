@@ -208,6 +208,17 @@
 	border:solid 1px;
 	border-color: #269793;
 }
+#drop_area
+{
+	margin-left: 128px;
+	width:600px; 
+	height:100px; 
+	border:3px dashed silver; 
+	line-height:100px; 
+	text-align:center; 
+	font-size:36px; 
+	color:#d3d3d3
+}
 #folderList_opeate_upload_filelist ol
 {
 	float: left;

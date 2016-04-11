@@ -201,7 +201,6 @@
 			Login($ftpManage);
 			$len = strlen(session_id());
 			$rDir = opendir('upload/');
-			error_log('sessionid leng'.$len);
 			while (($sFile = readdir($rDir)) != null)
 			{
 				$sessionId = substr($sFile, 0, $len);
