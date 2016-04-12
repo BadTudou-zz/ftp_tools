@@ -10,8 +10,9 @@
 
 //根目录的路径
 var gRootPath;
-
+//XHR对象
 gXhr = new XMLHttpRequest();
+//表单的文件数据
 var gFd = new FormData();
 /**
  * [ext是否支持显示图标的文件类型]
@@ -143,6 +144,9 @@ function RemoveAllFileItem()
 	$('#folderList_opeate_upload_filelist_ul_ck').empty();
 }
 
+/**
+ * [阻止浏览器的默认拖拽]
+ */
 function PreventBrowserDrop()
 {
    $(document).on(
@@ -361,28 +365,27 @@ function CreateFile(path, file)
 
 }
 
-function UploadFile(msg)
+/**
+ * [开始上传文件]
+ */
+function StartUploadFile()
 {
-	if (msg == 'OK')
+	$('#bn_upload_cancel').click();
+	ShowDig('folderList_header_toolbar_upload','上传文件成功');
+	$.ajax(
 	{
-		RemoveAllFileItem();
-		$.ajax(
+		url: 'web_manage.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {'action':'UploadFile','path':GetCurrentPath()}
+	})
+	.done(function(json)
+	{
+		if (json.state == 0)
 		{
-			url: 'web_manage.php',
-			type: 'POST',
-			dataType: 'JSON',
-			data: {'action':'UploadFile','path':GetCurrentPath()}
-		})
-		.done(function(json)
-		{
-			if (json.state == 0)
-			{
-				GetFileList('#folerviewlist', GetCurrentPath(), 0);
-				ShowDig('folderList_header_toolbar_upload','上传文件成功');
-				$('#folderList_opeate').hide();
-			}
-		})
-	}
+			GetFileList('#folerviewlist', GetCurrentPath(), 0);
+		}
+	})
 }
 /**
  * [文件操作]
@@ -392,6 +395,7 @@ function UploadFile(msg)
  */
 function FileOperate(action, file, args)
 {
+
 	var path = $('#folderList_header_path').text();
 	$.ajax(
 	{
@@ -546,15 +550,20 @@ $(document).ready(function()
 		var pos = path.lastIndexOf('/');
 		var tmpfile = path.substr(0, pos);
 		var file = path.substr(0, tmpfile.lastIndexOf('/')+1);
-		console.log(file);
 		GetFileList('#folerviewlist', file, 0);
 	});
 
 	//绑定单击文件上传按钮事件
 	$('#folderList_header_toolbar_upload').click(function(event)
 	{
-		//$('#fileupload').click();
-		$('#folderList_opeate').show();
+		if( $("#folderList_opeate").is(":hidden") )
+		{
+			$('#folderList_opeate').show();
+		} 
+		else
+		{
+			$('#bn_upload_cancel').click();
+		}
 	});
 
 
@@ -563,26 +572,27 @@ $(document).ready(function()
 	{
 		$('#folderList_opeate').show();
 		var afile = document.getElementById('fileupload');
+		var filelen = $("#folderList_opeate_upload_filelist_ul_name li").length;
 		for (i = 0; i < afile.files.length; i++) 
 		{
 			var filename = afile.files[i].name;
 			var filesize = (afile.files[i].size/1024).toFixed(2);
+			gFd.append('files['+(i+filelen)+']', afile.files[i]);
 			AddFileItem(filename, filesize);
         }
 	});
 
-	//绑定单击文件上传按钮事件
+	//绑定单击文件添加按钮事件
 	$('#bn_upload_add').click(function(event)
 	{
 		$('#fileupload').click();
-		$('#folderList_opeate').show();
 	});
 
 	//绑定单击列表项的取消按钮
 	$('#bn_upload_cancel').click(function()
 	{
 		RemoveAllFileItem();
-		$('#fileupload').attr("value","");
+		gFd = new FormData();
 		$('#folderList_opeate').hide();
 	});
 
@@ -595,6 +605,7 @@ $(document).ready(function()
 		{
 			RemoveFileItem(index);
 		}
+		
 	});
 
 	//绑定单击删除按钮
@@ -623,8 +634,6 @@ $(document).ready(function()
     		{
         		var path = $('#folderList_header_path').text();
         		var file = $('#filename').val();
-        		console.log('path:'+path);
-        		console.log('file'+file);
         		CreateFile(path, file);
         		return true;
     		}
@@ -652,44 +661,46 @@ $(document).ready(function()
 			d.show(document.getElementById('folderList_header_toolbar_newfolder'));
 	});
 
+	//单击开始上传按钮
 	$("#bn_upload_start").click(function()
 	{
+		if ($("#folderList_opeate_upload_filelist_ul_name li").length == 0)
+		{
+			return ;
+		}
+		gXhr.open("post", "upload.php", true);
+		gXhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 		gXhr.send(gFd);
+		gXhr.onreadystatechange = function(state)
+		{
+			if (gXhr.readyState == 4 && gXhr.responseText == 'true')
+			{	
+				StartUploadFile();		
+			}
+		}
 		
 	});
-	//提交文件列表表单
+	//提交文件列表表单表单
 	$("#form_uploadfile").submit(function()
 	{
-		
 		return false;
 	});
 
+	//文件拖拽
 	var drop_area = document.getElementById('drop_area');
 	drop_area.addEventListener("drop", function(event)
 	{
 		event.preventDefault();
-		
-		gXhr.open("post", "upload.php", true);
-		gXhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-		gXhr.onreadystatechange = function(state)
-		{
-			if (gXhr.readyState == 4)
-			{
-				console.log(gXhr.readyState+'  '+gXhr.responseText);	
-				UploadFile(gXhr.responseText);		
-			}
-		}
 		var files = event.dataTransfer.files;
+		var filelen = $("#folderList_opeate_upload_filelist_ul_name li").length;
 		for (var i = 0; i < files.length; i++) 
 		{
     		var file = files[i];
-    		gFd.append('files['+i+']', file);
+    		gFd.append('files['+(i+filelen)+']', file);
     		var filename = files[i].name;
 			var filesize = (files[i].size/1024).toFixed(2);
 			AddFileItem(filename, filesize);
-    		console.log(file.name);
 		}
-		console.log("test");
 	}, false);
 
 	PreventBrowserDrop();

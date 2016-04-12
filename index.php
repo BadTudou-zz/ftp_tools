@@ -29,7 +29,7 @@
 			<p><input type="text" id="ftp_port" name="ftp_port" placeholder="端口"></input></p>
 			<p><input type="text" id="ftp_user" name="ftp_user" placeholder="用户名"></input></p>
 			<p><input type="password" id="ftp_pwd" name="ftp_pwd" placeholder="密码"></input></p>
-			<p><input type="submit" id="submit_button" class="submit_buttonError" value="立即登陆" disabled="true"></input></p>
+			<p><input type="submit" id="submit_button" class="submit_buttonOk" value="立即登陆"></input></p>
 		</form>
 	</div>
 </body>

@@ -18,6 +18,6 @@
 		$tmp_name = $_FILES['files']['tmp_name'][$i];
 		move_uploaded_file($tmp_name, 'upload/'.iconv("UTF-8", "gb2312", session_id().$name));
 	}
-	echo 'OK';
+	echo 'true';
 
 ?>

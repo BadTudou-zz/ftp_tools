@@ -34,11 +34,13 @@ function CheckInput()
 
 $(document).ready(function() 
 {
-	$("input").focus(function(event) 
+	/*$("input").focus(function(event) 
 	{
+		console.log('focus');
 		$("#hintText").text("登陆FTP服务器").addClass('hintOk');
 		$("#hintText").removeClass('hintError');
-	});
+		CheckInput();
+	});*/
 
 	//读取Cookie的值
 	$('#ftp_host').val($.cookie('ftp_cookie[0]'));
@@ -49,9 +51,16 @@ $(document).ready(function()
 	//检测必填输入项是否有值，以决定是否启用提交按钮
 	$("input").change(function()
 	{
+		$("#hintText").text("登陆FTP服务器").addClass('hintOk');
+		$("#hintText").removeClass('hintError');
 		CheckInput();
 	});
 	
+	//登录按钮获得焦点
+	$("#submit_button").mouseenter(function()
+	{		
+		CheckInput();
+	});
 	//提交表单，登录FTP，成功则跳转至服务器返回的页面，失败则显示出错信息
 	$("#submit_button").click(function(event) 
 	{
