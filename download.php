@@ -23,4 +23,3 @@
 		unlink($file);
 		exit(); 
 	}
-?>
