@@ -25,11 +25,11 @@
 	<div id="ftp_section">
 		<form action="web_login.php" id="ftp_info" method="POST">
 			<p id="hintText" class="hintOk">登陆FTP服务器</p>
-			<p><input type="text" id="ftp_host" name="ftp_host" placeholder="域名/IP地址"></input></p>
-			<p><input type="text" id="ftp_port" name="ftp_port" placeholder="端口"></input></p>
-			<p><input type="text" id="ftp_user" name="ftp_user" placeholder="用户名"></input></p>
-			<p><input type="password" id="ftp_pwd" name="ftp_pwd" placeholder="密码"></input></p>
-			<p><input type="submit" id="submit_button" class="submit_buttonOk" value="立即登陆"></input></p>
+			<p><input type="text" id="ftp_host" name="ftp_host" placeholder="域名/IP地址"/></p>
+			<p><input type="text" id="ftp_port" name="ftp_port" placeholder="端口"/></p>
+			<p><input type="text" id="ftp_user" name="ftp_user" placeholder="用户名"/></p>
+			<p><input type="password" id="ftp_pwd" name="ftp_pwd" placeholder="密码"/></p>
+			<p><input type="submit" id="submit_button" class="submit_buttonOk" value="立即登陆"/></p>
 		</form>
 	</div>
 </body>

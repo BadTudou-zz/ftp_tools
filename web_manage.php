@@ -82,4 +82,3 @@
 		{
 			DisposeAction($_POST['action'], $ftpManage);
 		}
-	?>
