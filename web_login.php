@@ -36,3 +36,4 @@
 	$ftpManage = new FTP($ftp_host, $ftp_port, $ftp_user, $ftp_pwd);
 	$ftpManage->loginCheck();
 	session_write_close();
+?>

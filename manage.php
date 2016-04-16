@@ -13,14 +13,14 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="css/jqtree/jqtree.css">
 	<link rel="stylesheet" type="text/css" href="css/manage-style.css">
-	<link rel="stylesheet" type="text/css" href="css/ui-dialog.css">
-	<link rel="stylesheet" type="text/css" href="css/smartMenu.css">
+	<link rel="stylesheet" type="text/css" href="css/artDialog/ui-dialog.css">
+	<link rel="stylesheet" type="text/css" href="css/smartMenu/smartMenu.css">
 	<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
 	<script type="text/javascript" src="js/jquery.cookie.js"></script>
-	<script type="text/javascript" src="js/dialog-min.js"></script>
-	<script type="text/javascript" src="js/jquery-smartMenu-min.js"></script>
-	<script type="text/javascript" src="js/tree.jquery.js"></script>
-	<script type="text/javascript" src="js/jquery.form.min.js"></script>
+	<script type="text/javascript" src="js/artDialog/dialog-min.js"></script>
+	<script type="text/javascript" src="js/smartMenu/jquery-smartMenu-min.js"></script>
+	<script type="text/javascript" src="js/jqtree/tree.jquery.js"></script>
+	<script type="text/javascript" src="js/form/jquery.form.min.js"></script>
 	<script type="text/javascript" src="js/manage.js"></script>
 	<title>FTP Tool Manage</title>
 </head>
