@@ -74,7 +74,17 @@ function GetCurrentPath()
  */
 function SetCurrentPath(path)
 {
-	$('#folderList_header_path').text(path);
+	var pos;
+	var linkPath = "";
+	while ( (pos=path.indexOf('/')) != -1)
+	{
+		var textPath = path.substr(0,pos);
+		var clickPath = '<a href="#">'+textPath+'</a>/';
+		linkPath += clickPath;
+		path = path.substr(pos+1);
+	}
+	
+	$('#folderList_header_path').html(linkPath);
 }
 
 
@@ -536,6 +546,16 @@ $(document).ready(function()
 	$('#folderList_header_logo').click(function()
 	{
 		GetFileList('#folerviewlist', GetRootPath(), 0);
+	});
+
+	//绑定目录切换
+	$("#folderList_header_path").on("click","a", function()
+	{
+		var text = $(this).text();
+		var path = $("#folderList_header_path").text();
+		var pos = path.indexOf(text);
+		var currentPath = path.substr(0, pos+text.length+1);
+		GetFileList('#folerviewlist', currentPath, 0);
 	});
 
 	//绑定单击返回上一级按钮事件

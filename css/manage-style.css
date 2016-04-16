@@ -138,8 +138,17 @@
 	font-size: 120%;
 	width: 200px;
 	color: #1240AB;
-	text-decoration: underline;
 	font-weight: bold;
+}
+
+#folderList_header_path a
+{
+	text-decoration: none;
+}
+#folderList_header_path a:hover
+{
+	
+	color: #FF9900;
 }
 
 #folderList_header_back
