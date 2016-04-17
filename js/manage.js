@@ -55,7 +55,7 @@ function InitTree()
 {
 	var data = [{label:GetRootPath(), id:1}];
 	var $tree = $('#folderTree');
-	$tree.tree({data:data, autoOpen: true});
+	$tree.tree({data:data, autoOpen: true,  dragAndDrop: true});
 	GetFileList('#folderTree', GetRootPath(), GetTreeRoot());
 }
 
@@ -203,8 +203,8 @@ function Login()
 			SetRootPath(tmpRootPath);
 			InitTree();
 			$("#header_userinfo_head").show();
-			$("#header_userinfo_name").html($.cookie('ftp_cookie[2]'));
-			$("#header_userinfo_state").text('当前在线').css({color:"#13E03C"});
+			$("#header_userinfo_name").text($.cookie('ftp_cookie[2]')).css({color:"#13E03C"});
+			//$("#header_userinfo_state").text('当前在线').css({color:"#13E03C"});
 		}
 		else
 		{
@@ -490,6 +490,12 @@ function ShowContextMenu(object)
 
 $(document).ready(function()
 {
+
+	//绑定单击退出按钮事件
+	$('#header_userinfo_exit').click(function(event) 
+	{
+		this.href = "index.php";
+	});
 
 	//绑定单击文件树事件
 	$('#folderTree').bind

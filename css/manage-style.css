@@ -44,7 +44,19 @@
 	top: 25px;
 	left: 12px;
 }
-
+#header_userinfo_exit
+{
+	padding:2px 8px 2px 8px;
+	border: solid 1px;
+	border-color: #FFF;
+	color:#FF6600;
+	
+}
+#header_userinfo_exit:hover
+{
+	color: #FFF;	
+	background-color: #FF6600;
+}
 #folder
 {
 	position: relative;

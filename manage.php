@@ -30,7 +30,9 @@
 			<div id="header_userinfo_head"> <img  src="images/user.png"> </div>
 			<div id="header_userinfo_loginstate">
 				<div id="header_userinfo_name"></div>
-				<div id="header_userinfo_state"></div>
+				<div id="header_userinfo_state">
+					<a href="#" id="header_userinfo_exit">退出</a>
+				</div>
 			</div>
 		</div>
 	</div>
