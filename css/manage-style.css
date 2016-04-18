@@ -105,24 +105,17 @@
 	width: 130px;
 	height: 130px;
 	text-align: center;
-	background-image: url(../images/folder128.png);
 }
-/* .test
-{
-	display: inline-block;
-	width: 120px;
-	height: 100px;
-	display: block;
-	padding-top: 10px;
-	text-align: center;
-} */
+
 #folderList ul li a
 {
 	word-break:break-all;
 	display: block;
+	text-decoration: none;
+	font-weight: bold;
+	color: #000;
 	width: 130px;
 	height: 30px;
-	padding-top: 110px;
 	text-align: center;
 }
 #folderList_header
@@ -130,11 +123,19 @@
 	height: 60px;
 	border:solid 1px;
 }
-
+#folderList ul li img
+{
+	display: block;
+	width: 80px;
+	padding-left: 25px;
+	padding-right: 25px;
+	height: 80px;
+	text-align: center;
+}
 
 #folderList ul li a:hover
 {
-	border-color:solid 2px;
+	opacity: 0.2;
 	color: #FF9900;
 }
 #folderList_header_logo

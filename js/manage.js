@@ -10,10 +10,16 @@
 
 //根目录的路径
 var gRootPath;
+//当前文件
+var gCurrentFile;
+//操作的文件
+var gFile;
 //XHR对象
 gXhr = new XMLHttpRequest();
 //表单的文件数据
 var gFd = new FormData();
+
+
 /**
  * [ext是否支持显示图标的文件类型]
  * @param {[string]} ext [扩展名]
@@ -87,7 +93,15 @@ function SetCurrentPath(path)
 	$('#folderList_header_path').html(linkPath);
 }
 
+function SetCurrentFile(file)
+{
+	gCurrentFile = file;
+}
 
+function GetCurrentFile()
+{
+	return gCurrentFile;
+}
 /**
  * [获取根路径]
  * @return {string}  [根路径]
@@ -179,6 +193,44 @@ function PreventBrowserDrop()
         } 
     }); 
 }
+
+function CopyFile(file)
+{
+	gFile = file;
+	console.log('copy '+gFile);
+}
+
+function PasteFile(desFile ,sourceFile)
+{
+	FileOperate('paste', desFile, sourceFile);
+}
+
+function CatchHotKey()
+{
+	$(document).keydown(function(event) 
+	{
+		/* Act on the event */
+		if (event.ctrlKey)
+		{
+			switch (event.keyCode)
+			{
+				case 67:
+					if (GetCurrentFile() != null)
+					{
+						CopyFile(GetCurrentFile());
+						console.log('c');
+					}
+					break;
+
+				case 86:
+					console.log('v');
+					PasteFile(GetCurrentPath(), GetCurrentFile());
+					break;
+
+			}
+		}
+	}); 
+}
 /**
  * [登陆]
  */
@@ -227,11 +279,11 @@ function SetFileList(json)
 		var ext = obj.substr(pos+1);
 		if (IsFileType(ext))
 		{
-			$('#folerviewlist').append('<li style="background-image:url(images/'+ext+'.png); background-repeat: no-repeat;background-size:80px 80px;background-position:center;"><a href="#">'+obj+'</a></li>');
+			$('#folerviewlist').append('<li><a href="#"><img src="images/'+ext+'.png"/>'+obj+'</a></li>');
 		}
 		else
 		{
-			$('#folerviewlist').append('<li><a href="#">'+obj+'</a></li>');
+			$('#folerviewlist').append('<li><a href="#"><img src="images/folder128.png"/>'+obj+'</a></li>');
 		}
 	})
 }
@@ -423,6 +475,10 @@ function FileOperate(action, file, args)
 				window.open(json.msg, 'download');
 				return true;
 			}
+			else if (action == 'paste')
+			{
+				CopyFile(null);
+			}
 			ShowDig('folderList_header', json.msg);
 			GetFileList('#folerviewlist', path, 0);
 		}
@@ -539,7 +595,7 @@ $(document).ready(function()
 
 	$("#folerviewlist").on("mouseenter","li", function(event)
 	{
-		//console.log($(this).text());
+		SetCurrentFile(GetCurrentPath()+$(this).text());
 	});
 
 	$("#folerviewlist").on("contextmenu","li", function(event)
@@ -730,5 +786,6 @@ $(document).ready(function()
 	}, false);
 
 	PreventBrowserDrop();
+	CatchHotKey();
 	Login();
 });
