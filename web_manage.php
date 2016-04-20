@@ -47,10 +47,6 @@
 				case 'UploadFile':
 					UploadFile($ftpManage, $_POST['path']);
 					break;
-
-				case 'paste':
-					SendAnswer(0, '粘贴成功');
-					break;
 					
 				case 'delete':
 					DeleteFile($ftpManage, $_POST['path'], $_POST['file']);
@@ -58,6 +54,11 @@
 
 				case 'rename':
 					RenameFile($ftpManage, $_POST['path'], $_POST['file'], $_POST['newname']);
+					break;
+
+				case 'paste':
+					$filepath = 'upload/'.session_id().$_POST['file'];
+					DownloadFile($ftpManage, $_POST['path'], $_POST['file'], $filepath);
 					break;
 
 				case 'download':

@@ -1,5 +1,5 @@
 <!--
-	Copyright © DuZhongHai, 2016
+	Copyright © BadTudou, 2016
 	All rights reserved
 
 	Name	:	index.php

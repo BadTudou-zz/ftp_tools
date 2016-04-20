@@ -12,6 +12,8 @@
 var gRootPath;
 //当前文件
 var gCurrentFile;
+//操作的路径
+var gPath;
 //操作的文件
 var gFile;
 //XHR对象
@@ -194,15 +196,15 @@ function PreventBrowserDrop()
     }); 
 }
 
-function CopyFile(file)
+function CopyFile(sPath, sFile)
 {
-	gFile = file;
-	console.log('copy '+gFile);
+	gPath = sPath;
+	gFile = sFile;
 }
 
-function PasteFile(desFile ,sourceFile)
+function PasteFile(desPath)
 {
-	FileOperate('paste', desFile, sourceFile);
+	FileOperate('paste', gPath, gFile, null);
 }
 
 function CatchHotKey()
@@ -217,14 +219,13 @@ function CatchHotKey()
 				case 67:
 					if (GetCurrentFile() != null)
 					{
-						CopyFile(GetCurrentFile());
-						console.log('c');
+						CopyFile(GetCurrentPath(), GetCurrentFile());
+						ShowDig('folderList_header', '已复制');
 					}
 					break;
 
 				case 86:
-					console.log('v');
-					PasteFile(GetCurrentPath(), GetCurrentFile());
+					PasteFile(GetCurrentPath());
 					break;
 
 			}
@@ -427,13 +428,8 @@ function CreateFile(path, file)
 
 }
 
-/**
- * [开始上传文件]
- */
-function StartUploadFile()
+function UploadFile()
 {
-	$('#bn_upload_cancel').click();
-	ShowDig('folderList_header_toolbar_upload','上传文件成功');
 	$.ajax(
 	{
 		url: 'web_manage.php',
@@ -446,8 +442,19 @@ function StartUploadFile()
 		if (json.state == 0)
 		{
 			GetFileList('#folerviewlist', GetCurrentPath(), 0);
+			return true;
 		}
 	})
+
+}
+/**
+ * [开始上传文件]
+ */
+function StartUploadFile()
+{
+	$('#bn_upload_cancel').click();
+	ShowDig('folderList_header_toolbar_upload','上传文件成功');
+	UploadFile();
 }
 /**
  * [文件操作]
@@ -455,10 +462,8 @@ function StartUploadFile()
  * @param {[string]} file   [文件路径]
  * @param {[string]} args   [参数]
  */
-function FileOperate(action, file, args)
+function FileOperate(action, path, file, args)
 {
-
-	var path = $('#folderList_header_path').text();
 	$.ajax(
 	{
 		url: 'web_manage.php',
@@ -473,14 +478,17 @@ function FileOperate(action, file, args)
 			if (action == 'download')
 			{
 				window.open(json.msg, 'download');
-				return true;
 			}
 			else if (action == 'paste')
 			{
-				CopyFile(null);
+				UploadFile();
+				ShowDig('folderList_header', '粘贴成功');
 			}
-			ShowDig('folderList_header', json.msg);
-			GetFileList('#folerviewlist', path, 0);
+			else
+			{
+				ShowDig('folderList_header', json.msg);
+				GetFileList('#folerviewlist', path, 0);
+			}
 		}
 	})
 	.fail(function(json) 
@@ -500,21 +508,21 @@ function ShowContextMenu(object)
         		text: "打开",
         		func: function()
         		{
-            		FileOperate('open', $(this).text(), 0);
+            		FileOperate('open', GetCurrentPath(), $(this).text(), 0);
         		}
    			 },
     		 {
         		text: "下载",
         		func: function()
         		{
-            		FileOperate('download', $(this).text(), 0);
+            		FileOperate('download', GetCurrentPath(), $(this).text(), 0);
         		}
    			 },
    			  {
         		text: "删除",
         		func: function()
         		{
-            		FileOperate('delete', $(this).text(), 0);
+            		FileOperate('delete', GetCurrentPath(), $(this).text(), 0);
         		}
     		},
     		{
@@ -533,7 +541,7 @@ function ShowContextMenu(object)
     					ok: function ()
     					{
         					newname = $('#filename').val();
-			        		FileOperate('rename', file, newname);
+			        		FileOperate('rename', GetCurrentPath(), file, newname);
         					return true;
     					}
     				});
@@ -595,7 +603,7 @@ $(document).ready(function()
 
 	$("#folerviewlist").on("mouseenter","li", function(event)
 	{
-		SetCurrentFile(GetCurrentPath()+$(this).text());
+		SetCurrentFile($(this).text());
 	});
 
 	$("#folerviewlist").on("contextmenu","li", function(event)

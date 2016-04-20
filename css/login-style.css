@@ -8,16 +8,15 @@ body
 div#logo,div#ftp_section
 {
 	position: relative;
-	margin-left: 595px;
-	margin-top: 60px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
 }
 
 div#ftp_section
 {
-	position: relative;
 	width: 320px;
 	border: solid 1px;
-	margin-left: 515px;
 	border-color: #206FA1;
 	margin-top: 20px;
 }
