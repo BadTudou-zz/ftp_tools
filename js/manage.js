@@ -510,22 +510,45 @@ function ShowContextMenu(object)
         		{
             		FileOperate('open', GetCurrentPath(), $(this).text(), 0);
         		}
-   			 },
-    		 {
+   			  },
+    		  {
         		text: "下载",
         		func: function()
         		{
             		FileOperate('download', GetCurrentPath(), $(this).text(), 0);
         		}
-   			 },
+   			  },
+   			  {
+        		text: "复制",
+        		func: function()
+        		{
+            		CopyFile(GetCurrentPath(), $(this).text());
+            		ShowDig('folderList_header', '已复制');
+        		}
+    		  },
+    		  {
+        		text: "剪切",
+        		func: function()
+        		{
+            		CopyFile(GetCurrentPath(), $(this).text());
+            		ShowDig('folderList_header', '已剪贴');
+        		}
+    		  },
+    		  {
+        		text: "粘贴",
+        		func: function()
+        		{
+            		FileOperate('paste', GetCurrentPath(), $(this).text());
+        		}
+    		  },
    			  {
         		text: "删除",
         		func: function()
         		{
             		FileOperate('delete', GetCurrentPath(), $(this).text(), 0);
         		}
-    		},
-    		{
+    		  },
+    		  {
         		text: "重命名",
         		func: function()
         		{
