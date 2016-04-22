@@ -13,11 +13,13 @@ var gRootPath;
 //当前文件
 var gCurrentFile;
 //操作的路径
-var gPath;
+var gSourcePath;
 //操作的文件
-var gFile;
+var gSourceFile;
 //XHR对象
 gXhr = new XMLHttpRequest();
+//剪切的标志
+var gbIsCut = false;
 //表单的文件数据
 var gFd = new FormData();
 
@@ -104,6 +106,17 @@ function GetCurrentFile()
 {
 	return gCurrentFile;
 }
+
+function GetSourcePath()
+{
+	return gSourcePath;
+}
+
+function GetSourceFile()
+{
+	return gSourceFile;
+}
+
 /**
  * [获取根路径]
  * @return {string}  [根路径]
@@ -198,13 +211,22 @@ function PreventBrowserDrop()
 
 function CopyFile(sPath, sFile)
 {
-	gPath = sPath;
-	gFile = sFile;
+	gSourcePath = sPath;
+	gSourceFile = sFile;
 }
 
-function PasteFile(desPath)
+function PasteFile()
 {
-	FileOperate('paste', gPath, gFile, null);
+	if (gbIsCut)
+	{
+		FileOperate('paste', GetSourcePath(), GetSourceFile(), true);
+		gbIsCut = false;
+	}
+	else
+	{
+		FileOperate('paste', GetSourcePath(), GetSourceFile(), null);
+	}
+	
 }
 
 function CatchHotKey()
@@ -531,6 +553,7 @@ function ShowContextMenu(object)
         		func: function()
         		{
             		CopyFile(GetCurrentPath(), $(this).text());
+            		gbIsCut = true;
             		ShowDig('folderList_header', '已剪贴');
         		}
     		  },
@@ -538,7 +561,7 @@ function ShowContextMenu(object)
         		text: "粘贴",
         		func: function()
         		{
-            		FileOperate('paste', GetCurrentPath(), $(this).text());
+            		PasteFile();
         		}
     		  },
    			  {

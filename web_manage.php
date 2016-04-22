@@ -45,7 +45,7 @@
 					break;
 
 				case 'UploadFile':
-					UploadFile($ftpManage, $_POST['path']);
+					UploadFile($ftpManage, $_POST['path']); 
 					break;
 					
 				case 'delete':
@@ -54,11 +54,16 @@
 
 				case 'rename':
 					RenameFile($ftpManage, $_POST['path'], $_POST['file'], $_POST['newname']);
+					unset($_POST['newname']);
 					break;
 
 				case 'paste':
 					$filepath = 'upload/'.session_id().$_POST['file'];
 					DownloadFile($ftpManage, $_POST['path'], $_POST['file'], $filepath);
+					if (isset($_POST['newname']) && ($_POST['newname'] == true) )
+					{
+						DeleteFile($ftpManage, $_POST['path'], $_POST['file']);
+					}
 					break;
 
 				case 'download':
