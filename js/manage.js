@@ -652,12 +652,15 @@ $(document).ready(function()
 		SetCurrentFile($(this).text());
 	});
 
-	$("#folerviewlist").on("contextmenu","li", function(event)
+	$("#folerviewlist").on("mousedown","li", function(event)
 	{
-		event.stopPropagation();
-		ShowContextMenu($(this));
-		return false;
+		if (event.which == 3)
+		{
+			ShowContextMenu($(this));
+			return true;
+		}
 	});
+
 	//绑定单击主页按钮事件
 	$('#folderList_header_logo').click(function()
 	{
