@@ -249,8 +249,12 @@ function CatchHotKey()
 				case 86:
 					PasteFile(GetCurrentPath());
 					break;
-
 			}
+		}
+		if (event.keyCode == 113)
+		{
+			ShowRenameFileDialog(GetCurrentFile());
+			console.log('F2');
 		}
 	}); 
 }
@@ -279,7 +283,6 @@ function Login()
 			InitTree();
 			$("#header_userinfo_head").show();
 			$("#header_userinfo_name").text($.cookie('ftp_cookie[2]')).css({color:"#13E03C"});
-			//$("#header_userinfo_state").text('当前在线').css({color:"#13E03C"});
 		}
 		else
 		{
@@ -450,6 +453,26 @@ function CreateFile(path, file)
 
 }
 
+function ShowRenameFileDialog(file)
+{
+	var newname = null;
+    var d = dialog(
+	{
+    	title: '新的文件名',
+    	align: 'top',
+    	content: '<input id="filename" value="'+file+'"autofocus />',
+    	okValue: '确定',
+    	cancelValue: '取消',
+    	ok: function ()
+    	{
+       		newname = $('#filename').val();
+	      	FileOperate('rename', GetCurrentPath(), file, newname);
+       		return true;
+    	}
+    });
+	d.show(document.getElementById('folderList_header'));
+}
+
 function UploadFile()
 {
 	$.ajax(
@@ -576,23 +599,8 @@ function ShowContextMenu(object)
         		func: function()
         		{
         			var file = $(this).text();
-        			var newname = null;
-        			var d = dialog(
-					{
-    					title: '新的文件名',
-    					align: 'top',
-    					content: '<input id="filename" value="'+file+'"autofocus />',
-    					okValue: '确定',
-    					cancelValue: '取消',
-    					ok: function ()
-    					{
-        					newname = $('#filename').val();
-			        		FileOperate('rename', GetCurrentPath(), file, newname);
-        					return true;
-    					}
-    				});
-					d.show(document.getElementById('folderList_header'));
-				}
+        			ShowRenameFileDialog(file);
+        		}
     		}],
 		];
 		$(object).smartMenu(imageMenuData);
